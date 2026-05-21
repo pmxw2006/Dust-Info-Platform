@@ -1,0 +1,486 @@
+﻿@{
+    ViewBag.Title = "帖子详情";
+    Layout = "~/Views/Shared/_YongHu.cshtml";
+    // 安全获取数据
+    var tieZiList = ViewBag.tiezi as List<WebApplication1.Models.TieZi>;
+    var zhaoPianList = ViewBag.zhaopian as List<WebApplication1.Models.ZhaoPian>;
+    var neiRongList = ViewBag.neirong as List<WebApplication1.Models.TieziXiangXi>;
+    var yongHuMing = ViewBag.yonghuming?.ToString() ?? "匿名用户";
+    var YongHuID = ViewBag.YongHuID;
+    var YongHuUID = ViewBag.YongHuUID;
+
+    var mainTieZi = tieZiList?.FirstOrDefault();
+    var tieZiMing = mainTieZi?.TieZiMing ?? "暂无标题";
+    DateTime? faBuShiJian = mainTieZi?.FaBuShiJian;
+}
+@section styles {
+    <link href="~/CSS/YngHu/TieZiNeiRong.css" rel="stylesheet" type="text/css" />
+}
+
+<!-- 加载遮罩 -->
+<div id="global-loading">
+    <div class="loading-spinner"></div>
+    <div>正在加载帖子内容...</div>
+</div>
+
+<!-- 实际页面内容 -->
+<div id="page-content" style="display: none;">
+    <div class="xiangqing-neirong">
+        <!-- 标题 -->
+        <h1 class="xiangqing-biao-ti">@tieZiMing</h1>
+
+        <!-- 作者与时间 -->
+        <div class="xiangqing-xinxi">
+            <span>
+                <a href="@(YongHuID == int.Parse(Session["ID"].ToString()) ? "/YongGeRenZhongXin/GeReXiangXi" : "/YongGeRenZhongXin/QiTaYongHu?id=" + YongHuUID)" class="xiangqing-zuozhe">
+                    @yongHuMing
+                </a>
+            </span>
+            <span>
+                @if (faBuShiJian.HasValue)
+                {
+                    @faBuShiJian.Value.ToString("yyyy年MM月dd日 HH:mm")
+                }
+                else
+                {
+                    <span>刚刚发布</span>
+                }
+            </span>
+        </div>
+
+        <!-- 图片区域 -->
+        @if (zhaoPianList != null && zhaoPianList.Any(p => p != null && !string.IsNullOrEmpty(p.Lujing)))
+        {
+            <div class="xiangqing-tupian">
+                @foreach (var photo in zhaoPianList)
+                {
+                    if (photo != null && !string.IsNullOrEmpty(photo.Lujing))
+                    {
+                        <div class="tupian-xiang">
+                            <img src="/Img/@photo.Lujing" alt="帖子附图" loading="lazy"
+                                 onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%231e2a3a\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%238f9bb3\' font-size=\'14\'%3E图片加载失败%3C/text%3E%3C/svg%3E';">
+                        </div>
+                    }
+                }
+            </div>
+        }
+
+        <!-- 正文 -->
+        @if (neiRongList != null && neiRongList.Any())
+        {
+            <div class="xiangqing-zhengwen">
+                @foreach (var contentItem in neiRongList)
+                {
+                    if (contentItem?.NeiRong != null)
+                    {
+                        <p>@contentItem.NeiRong</p>
+                    }
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-placeholder">暂无正文内容</div>
+        }
+
+        <div class="xiangqing-fengexian"></div>
+
+        <div id="app-hudong">
+            <div class="xiangqing-hudong">
+                <div class="hudong-xiang" id="dianzan">
+                    <input type="button" value="@(ViewBag.yesorno==0 ?$"点赞 {ViewBag.dianzanshu}" : $"已点赞 {ViewBag.dianzanshu}")" @@click="xiugai(@ViewBag.Tid)" />
+                </div>
+                <div class="hudong-xiang" id="pinglun">
+                    <input type="button" value="评论" @@click="Tpinglun()" />
+                </div>
+            </div>
+            <div class="comment-container" v-if="pinglun.length > 0">
+                <div v-for="i in pinglun">
+                    <div>{{i.YongHuMing}}</div>
+                    <div>{{i.PingLuNeiRong}}</div>
+                    <div>{{i.PingLuShiJian}}</div>
+                    <div>
+                        <input type="button" value="回复" @@click="Spinglun(i.ZhuPingLunID)" />
+                        <input type="button" value="查看回复" @@click="toggleChild(i.ZhuPingLunID)" v-if="i.ZiPinglunList && i.ZiPinglunList.length>0" />
+                        <input type="button" value="删除评论" v-if="i.YongHuID==@ViewBag.Yid" @@click="shanchuZhu(i.ZhuPingLunID)" :disabled="Isshanchu" />
+                    </div>
+                    <div :id="'child-'+i.ZhuPingLunID" class="child-comment-wrapper">
+                        <div v-for="j in i.ZiPinglunList">
+                            <div>{{j.YongHuMing}}</div>
+                            <div>{{j.PingLuNeiRong}}</div>
+                            <div>{{j.PingLuShiJian}}</div>
+                            <div>
+                                <input type="button" value="回复" @@click="Spinglun(i.ZhuPingLunID)" />
+                                <input type="button" value="删除评论" v-if="j.YongHuID==@ViewBag.Yid" @@click="shanchuZi(j.ZiPingLunID)" :disabled="Isshanchu" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="xiangqing-fengexian"></div>
+            <div v-if="Iszhupinglun" class="bottom-input-fixed">
+                <input type="text" v-model="textpinglun" placeholder="写下你的评论..." />
+                <input type="button" value="发送" @@click="fasong()" :disabled="isSending" />
+            </div>
+            <div v-if="Iszipinglun" class="bottom-input-fixed">
+                <input type="text" v-model="textpinglun" placeholder="写下你的回复..." />
+                <input type="button" value="发送" @@click="huifupinglun()" :disabled="isSending" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.14/vue.min.js"></script>
+<script>
+    // 返回按钮
+    (function () {
+        if (document.querySelector('.fanhui-guding-dynamic')) return;
+        var btn = document.createElement('a');
+        btn.className = 'fanhui-guding fanhui-guding-dynamic';
+        btn.setAttribute('href', '/YongHu/Index');
+        btn.setAttribute('title', '返回列表');
+        btn.innerHTML = '←';
+        document.body.appendChild(btn);
+    })();
+
+    // 消息提示
+    function showMessage(msg) {
+        var existingModal = document.getElementById('customMessageModal');
+        if (existingModal) existingModal.remove();
+        document.body.classList.add('no-scroll');
+
+        var overlay = document.createElement('div');
+        overlay.className = 'mo-tai-zhe-zhao';
+        overlay.id = 'customMessageModal';
+
+        var card = document.createElement('div');
+        card.className = 'mo-tai-ka-pian';
+
+        var title = document.createElement('h3');
+        title.textContent = '提示';
+
+        var msgP = document.createElement('p');
+        msgP.textContent = msg;
+
+        var btnContainer = document.createElement('div');
+        btnContainer.className = 'mo-tai-an-niu';
+
+        var confirmBtn = document.createElement('button');
+        confirmBtn.textContent = '确定';
+        confirmBtn.addEventListener('click', closeMessageModal);
+
+        btnContainer.appendChild(confirmBtn);
+        card.appendChild(title);
+        card.appendChild(msgP);
+        card.appendChild(btnContainer);
+        overlay.appendChild(card);
+
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) closeMessageModal();
+        });
+
+        document.body.appendChild(overlay);
+    }
+
+    function closeMessageModal() {
+        var modal = document.getElementById('customMessageModal');
+        if (modal) modal.remove();
+        document.body.classList.remove('no-scroll');
+    }
+
+    // Vue 实例
+    new Vue({
+        el: "#app-hudong",
+        data: {
+            id: 0,
+            pinlunID: 0,
+            pinglun: [],
+            Iszhupinglun: false,
+            textpinglun: "",
+            isSending: false,
+            Iszipinglun: false,
+            Isshanchu: false,
+        },
+        created: function () {
+            const _self = this;
+            _self.id = new URLSearchParams(window.location.search).get("id");
+            fetch("/Models/YongHuB/PingLun.ashx?id=" + _self.id)
+                .then(p => p.json())
+                .then(p => {
+                    _self.pinglun = p;
+                    document.getElementById('global-loading').style.display = 'none';
+                    document.getElementById('page-content').style.display = 'block';
+                })
+                .catch(err => {
+                    console.error("评论加载失败", err);
+                    document.getElementById('global-loading').style.display = 'none';
+                    document.getElementById('page-content').style.display = 'block';
+                    showMessage("评论加载失败，请刷新页面重试");
+                });
+        },
+        methods: {
+            xiugai: function () { window.location.href = "/YongHu/xiugai?id=" + this.id; },
+            Tpinglun: function () { this.Iszhupinglun = !this.Iszhupinglun; this.Iszipinglun = false; },
+            Spinglun: function (id) { this.Iszhupinglun = false; this.Iszipinglun = !this.Iszipinglun; this.pinlunID = id; },
+            fasong: function () {
+                const _self = this;
+                if (_self.isSending) return;
+                if (!_self.textpinglun || _self.textpinglun.trim() === "") {
+                    showMessage('评论不得为空');
+                    return;
+                }
+                _self.isSending = true;
+                fetch("/Models/YongHuB/FaSongZhuPingLun.ashx?id=" + _self.id, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ pinglun: _self.textpinglun })
+                })
+                    .then(p => p.json())
+                    .then(p => {
+                        if (p.success) {
+                            fetch("/Models/YongHuB/PingLun.ashx?id=" + _self.id)
+                                .then(p => p.json())
+                                .then(p => _self.pinglun = p);
+                            _self.textpinglun = "";
+                            showMessage('评论成功');
+                        } else {
+                            showMessage("评论失败，请稍后再试");
+                        }
+                    })
+                    .catch(() => {
+                        showMessage("网络异常，评论发送失败");
+                    })
+                    .finally(() => {
+                        _self.isSending = false;
+                    }); },
+            huifupinglun: function () {
+                const _self = this;
+                if (_self.isSending) return;
+                if (!_self.textpinglun || _self.textpinglun.trim() === "") {
+                    showMessage('评论不得为空');
+                    return;
+                }
+                _self.isSending = true;
+                fetch("/Models/YongHuB/FaSongZiPingLun.ashx?id=" + _self.id, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        pinglun: _self.textpinglun,
+                        zhuPingLunID: _self.pinlunID
+                    })
+                })
+                    .then(p => p.json())
+                    .then(p => {
+                        if (p.success) {
+                            fetch("/Models/YongHuB/PingLun.ashx?id=" + _self.id)
+                                .then(p => p.json())
+                                .then(p => _self.pinglun = p);
+                            _self.textpinglun = "";
+                            showMessage('回复成功');
+                        } else {
+                            showMessage("回复失败，请稍后再试");
+                        }
+                    })
+                    .catch(() => {
+                        showMessage("网络异常，回复发送失败");
+                    })
+                    .finally(() => {
+                        _self.isSending = false;
+                    }); },
+            shanchuZhu: function (id) {
+                const _self = this;
+                _self.Isshanchu = true;
+                fetch("/Models/YongHuB/ShanChuPingLun.ashx", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ ZhuPingLunID: id })
+                })
+                    .then(p => p.json())
+                    .then(p => {
+                        if (p.success) {
+                            fetch("/Models/YongHuB/PingLun.ashx?id=" + _self.id)
+                                .then(p => p.json())
+                                .then(p => _self.pinglun = p);
+                            showMessage('删除成功');
+                        } else {
+                            showMessage('删除失败');
+                        }
+                    })
+                    .catch(() => {
+                        showMessage("网络异常，删除失败");
+                    })
+                    .finally(() => {
+                        _self.Isshanchu = false;
+                    });
+            },
+            shanchuZi: function (id) {
+                const _self = this;
+                _self.Isshanchu = true;
+                fetch("/Models/YongHuB/ShanChuPingLun.ashx", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ ZiPingLunID: id })
+                })
+                    .then(p => p.json())
+                    .then(p => {
+                        if (p.success) {
+                            fetch("/Models/YongHuB/PingLun.ashx?id=" + _self.id)
+                                .then(p => p.json())
+                                .then(p => _self.pinglun = p);
+                            showMessage('删除成功');
+                        } else {
+                            showMessage('删除失败');
+                        }
+                    })
+                    .catch(() => {
+                        showMessage("网络异常，删除失败");
+                    })
+                    .finally(() => {
+                        _self.Isshanchu = false;
+                    });
+            },
+            // 切换子评论显示/隐藏
+            toggleChild(zhuId) {
+                const dom = document.getElementById('child-' + zhuId);
+                if (dom) dom.classList.toggle('show');
+            },
+        }
+    });
+
+    // ========== 图片轮播（内联样式强制按钮颜色，已添加 backgroundImage: none 消除模板页绿色渐变） ==========
+    (function initImageCarousel() {
+        function setupCarousel() {
+            var tupianContainer = document.querySelector('.xiangqing-tupian');
+            if (!tupianContainer || tupianContainer.querySelector('.carousel-arrow')) return;
+
+            var allImages = tupianContainer.querySelectorAll('.tupian-xiang');
+            if (allImages.length <= 1) {
+                if (allImages.length === 1) allImages[0].classList.add('active');
+                return;
+            }
+
+            var total = allImages.length;
+            var currentIndex = 0;
+            allImages[0].classList.add('active');
+
+            // 按钮基础样式（与点赞按钮完全一致，backgroundImage: none 用于清除模板页的绿色渐变）
+            var baseStyle = {
+                backgroundColor: '#1e2c3c',
+                backgroundImage: 'none',
+                border: '1px solid #2c4050',
+                color: '#b8c7d4',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)',
+                transition: 'all 0.2s ease'
+            };
+
+            var hoverStyle = {
+                backgroundColor: '#26445e',
+                backgroundImage: 'none',
+                borderColor: '#4f8bc9',
+                color: '#ffffff',
+                boxShadow: '0 4px 10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)'
+            };
+
+            // 创建按钮并应用内联样式
+            function createArrowButton(className, innerHTML) {
+                var btn = document.createElement('button');
+                btn.className = 'carousel-arrow ' + className;
+                btn.innerHTML = innerHTML;
+                btn.setAttribute('type', 'button');
+
+                // 设置初始样式（带 !important 防止被覆盖）
+                btn.style.setProperty('background-color', baseStyle.backgroundColor, 'important');
+                btn.style.setProperty('background-image', 'none', 'important');
+                btn.style.setProperty('border', baseStyle.border, 'important');
+                btn.style.setProperty('color', baseStyle.color, 'important');
+                btn.style.setProperty('box-shadow', baseStyle.boxShadow, 'important');
+                btn.style.transition = baseStyle.transition;
+
+                // 悬停效果（监听事件动态切换内联样式）
+                btn.addEventListener('mouseenter', function () {
+                    if (btn.style.display === 'none') return;
+                    btn.style.setProperty('background-color', hoverStyle.backgroundColor, 'important');
+                    btn.style.setProperty('background-image', 'none', 'important');
+                    btn.style.setProperty('border-color', hoverStyle.borderColor, 'important');
+                    btn.style.setProperty('color', hoverStyle.color, 'important');
+                    btn.style.setProperty('box-shadow', hoverStyle.boxShadow, 'important');
+                });
+
+                btn.addEventListener('mouseleave', function () {
+                    if (btn.style.display === 'none') return;
+                    btn.style.setProperty('background-color', baseStyle.backgroundColor, 'important');
+                    btn.style.setProperty('background-image', 'none', 'important');
+                    btn.style.setProperty('border', baseStyle.border, 'important');
+                    btn.style.setProperty('color', baseStyle.color, 'important');
+                    btn.style.setProperty('box-shadow', baseStyle.boxShadow, 'important');
+                });
+
+                return btn;
+            }
+
+            var leftArrow = createArrowButton('carousel-arrow-left', '‹');
+            var rightArrow = createArrowButton('carousel-arrow-right', '›');
+
+            tupianContainer.appendChild(leftArrow);
+            tupianContainer.appendChild(rightArrow);
+
+            function updateArrowVisibility() {
+                leftArrow.style.display = (currentIndex === 0) ? 'none' : 'flex';
+                rightArrow.style.display = (currentIndex === total - 1) ? 'none' : 'flex';
+            }
+
+            function goToSlide(index) {
+                if (index < 0 || index >= total) return;
+                allImages[currentIndex].classList.remove('active');
+                currentIndex = index;
+                allImages[currentIndex].classList.add('active');
+                updateArrowVisibility();
+            }
+
+            function nextSlide() { if (currentIndex < total - 1) goToSlide(currentIndex + 1); }
+            function prevSlide() { if (currentIndex > 0) goToSlide(currentIndex - 1); }
+
+            updateArrowVisibility();
+
+            leftArrow.addEventListener('click', function (e) { e.preventDefault(); prevSlide(); });
+            rightArrow.addEventListener('click', function (e) { e.preventDefault(); nextSlide(); });
+
+            // 键盘支持
+            var keyboardAdded = false;
+            function addKeyboard() {
+                if (keyboardAdded) return;
+                document.addEventListener('keydown', function (e) {
+                    var rect = tupianContainer.getBoundingClientRect();
+                    if (!(rect.top < window.innerHeight && rect.bottom > 0)) return;
+                    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) return;
+                    if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+                    else if (e.key === 'ArrowRight') { e.preventDefault(); nextSlide(); }
+                });
+                keyboardAdded = true;
+            }
+            addKeyboard();
+
+            // 触摸滑动
+            var touchStartX = 0;
+            tupianContainer.addEventListener('touchstart', function (e) { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+            tupianContainer.addEventListener('touchend', function (e) {
+                var diff = touchStartX - e.changedTouches[0].screenX;
+                if (Math.abs(diff) > 50) diff > 0 ? nextSlide() : prevSlide();
+            }, { passive: true });
+        }
+
+        var attempts = 0;
+        var interval = setInterval(function () {
+            attempts++;
+            var container = document.querySelector('.xiangqing-tupian');
+            if (container && container.querySelectorAll('.tupian-xiang').length > 0) {
+                clearInterval(interval);
+                setupCarousel();
+            } else if (attempts >= 20) {
+                clearInterval(interval);
+            }
+        }, 250);
+
+        window.addEventListener('load', function () { setTimeout(setupCarousel, 600); });
+    })();
+</script>

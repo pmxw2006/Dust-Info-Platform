@@ -1,0 +1,288 @@
+﻿@model WebApplication1.Models.RenYuanGuanLi.TianJiaZhangHuViewModel
+@{
+    Layout = null;
+    string chengGongMsg = TempData["SuccessMessage"]?.ToString();
+    string cuoWuMsg = TempData["ErrorMessage"]?.ToString();
+    bool skipAnimation = TempData["SkipAnimation"] != null && (bool)TempData["SkipAnimation"];
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>微尘咨询平台 - 添加账户</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Vue 2 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+    <!-- 公共样式 + 登录页背景样式 -->
+    <link href="~/CSS/GongGong/DengLu/DengLuGongGong.css" rel="stylesheet" />
+    <link href="~/CSS/DengLu/DengLuYe.css" rel="stylesheet" />
+    <link href="~/CSS/DengLu/TianJiaZhangHu.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="tianjia-app" v-cloak>
+        @{
+            var formClasses = "denglu-rongqi";
+            if (!skipAnimation) { formClasses += " ka-pian-dong-hua"; }
+            else { formClasses += " skip-fadein"; }
+        }
+        @using (Html.BeginForm("TianJiaZhangHu", "DengLu", FormMethod.Post, new { @class = formClasses, @ref = "tianjiaForm" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="denglu-toubu">
+                <h1>添加账户</h1>
+                <p>Create New Account</p>
+            </div>
+
+            <div class="denglu-zhuti">
+                <!-- 成功提示（块级） -->
+                <div v-if="chengGongMsg" class="chenggong-tishi" style="display:block;">{{ chengGongMsg }}</div>
+                <!-- 错误提示（块级，移入卡片内部） -->
+                <div v-if="cuoWuMsg" class="cuowu-tishi">{{ cuoWuMsg }}</div>
+
+                <!-- 用户名 -->
+                <div class="biaodan-zu">
+                    <label>用户名 <span style="color:red;">*</span></label>
+                    @Html.TextBoxFor(m => m.YongHuMing, new
+                    {
+                        @class = "biaodan-kongzhi",
+                        placeholder = "请输入用户名（3-10位）",
+                        v_model = "yongHuMing",
+                        @ref = "yongHuInput"
+                    })
+                    <span class="tishi">
+                        <span v-if="yongHuError">{{ yongHuError }}</span>
+                        <span v-else> </span>
+                    </span>
+                    @Html.ValidationMessageFor(m => m.YongHuMing, "", new { @class = "tishi", style = "display:none;" })
+                </div>
+
+                <!-- 邮箱 -->
+                <div class="biaodan-zu">
+                    <label>邮箱 <span style="color:red;">*</span></label>
+                    @Html.TextBoxFor(m => m.YouXiang, new
+                    {
+                        @class = "biaodan-kongzhi",
+                        placeholder = "请输入注册邮箱",
+                        v_model = "youXiang",
+                        @ref = "youXiangInput"
+                    })
+                    <span class="tishi">
+                        <span v-if="youXiangError">{{ youXiangError }}</span>
+                        <span v-else> </span>
+                    </span>
+                    @Html.ValidationMessageFor(m => m.YouXiang, "", new { @class = "tishi", style = "display:none;" })
+                </div>
+
+                <!-- 登录密码 -->
+                <div class="biaodan-zu">
+                    <label>登录密码 <span style="color:red;">*</span></label>
+                    @Html.PasswordFor(m => m.MiMa, new
+                    {
+                        @class = "biaodan-kongzhi",
+                        placeholder = "请输入登录密码（6-20位）",
+                        v_model = "miMa",
+                        @ref = "miMaInput"
+                    })
+                    <span class="tishi">
+                        <span v-if="miMaError">{{ miMaError }}</span>
+                        <span v-else> </span>
+                    </span>
+                    <div class="MiMaQiangDuTiao" :class="miMaQiangDuClass"></div>
+                    <span style="font-size:12px;color:#acdbf5;">{{ miMaQiangDuText }}</span>
+                </div>
+
+                <!-- 确认密码 -->
+                <div class="biaodan-zu">
+                    <label>确认密码 <span style="color:red;">*</span></label>
+                    @Html.PasswordFor(m => m.QueRenMiMa, new
+                    {
+                        @class = "biaodan-kongzhi",
+                        placeholder = "请再次输入密码",
+                        v_model = "queRenMiMa",
+                        @ref = "queRenInput"
+                    })
+                    <span class="tishi">
+                        <span v-if="queRenError">{{ queRenError }}</span>
+                        <span v-else> </span>
+                    </span>
+                    @Html.ValidationMessageFor(m => m.QueRenMiMa, "", new { @class = "tishi", style = "display:none;" })
+                </div>
+
+                <!-- 密码要求提示 -->
+                <div style="background-color:rgba(34,45,58,0.6); padding:12px; border-radius:4px; margin-top:15px;">
+                    <div style="color:#acdbf5; margin-bottom:8px;">密码要求：</div>
+                    <ul style="margin:0; padding-left:20px; color:#8fbedc; font-size:13px;">
+                        <li>密码长度6-20位</li>
+                        <li>建议包含字母大小写、数字和特殊字符</li>
+                        <li>较强的密码可以更好地保护账户安全</li>
+                    </ul>
+                </div>
+
+                <!-- 按钮区域 -->
+                <div class="AnNiuQuYu">
+                    <button type="button" class="denglu-anniu AnNiuTianJia" @@click="tiJiaoBiaoDan">添加用户</button>
+                    <a href="@Url.Action("DengLuYe", "DengLu")" class="AnNiuFanHui">返回列表</a>
+                </div>
+            </div>
+        }
+    </div>
+
+    <script>
+        (function() {
+            var isPageRestored = false;
+            window.addEventListener('pageshow', function(e) { if (e.persisted) isPageRestored = true; });
+
+            new Vue({
+                el: '#tianjia-app',
+                data: {
+                    yongHuMing: '@Model.YongHuMing',
+                    youXiang: '@Model.YouXiang',
+                    miMa: '',
+                    queRenMiMa: '',
+                    yongHuError: '',
+                    youXiangError: '',
+                    quanXianError: '',
+                    miMaError: '',
+                    queRenError: '',
+                    chengGongMsg: @Html.Raw(Json.Encode(chengGongMsg)),
+                    cuoWuMsg: @Html.Raw(Json.Encode(cuoWuMsg)),
+                    fadeTimer: null,
+                    successTimer: null,        // 成功跳转计时器
+                    miMaQiangDuClass: '',
+                    miMaQiangDuText: '密码强度：无'
+                },
+                mounted: function() {
+                    var self = this;
+                    if (isPageRestored) { self.resetForm(); isPageRestored = false; }
+                    if (self.cuoWuMsg) self.qiDongDanChuJiShi();
+                    // 修改点：成功消息出现时，启动跳转计时器
+                    if (self.chengGongMsg) self.qiDongChengGongTiaoZhuan();
+                    window.addEventListener('pageshow', function(e) { if (e.persisted) self.resetForm(); });
+                },
+                methods: {
+                    resetForm: function() {
+                        this.yongHuMing = ''; this.youXiang = ''; this.quanXian = '';
+                        this.miMa = ''; this.queRenMiMa = '';
+                        this.yongHuError = ''; this.youXiangError = ''; this.quanXianError = '';
+                        this.miMaError = ''; this.queRenError = '';
+                        this.cuoWuMsg = null; this.chengGongMsg = null;
+                        if (this.fadeTimer) clearTimeout(this.fadeTimer);
+                        if (this.successTimer) clearTimeout(this.successTimer);
+                        ['yongHuInput','youXiangInput','miMaInput','queRenInput'].forEach(function(r){
+                            if (self.$refs[r]) self.$refs[r].classList.remove('error');
+                        });
+                    },
+                    validate: function () {
+                        var valid = true;
+                        // 用户名验证
+                        var username = this.yongHuMing ? this.yongHuMing.trim() : '';
+                        if (!username) {
+                            this.yongHuError = '用户名不能为空';
+                            this.$refs.yongHuInput.classList.add('error');
+                            valid = false;
+                        } else if (username.length < 3 || username.length > 10) {  
+                            this.yongHuError = '用户名长度需在3-10位之间';
+                            this.$refs.yongHuInput.classList.add('error');
+                            valid = false;
+                        }
+                        // 邮箱验证
+                        var email = this.youXiang ? this.youXiang.trim() : '';
+                        if (!email) {
+                            this.youXiangError = '邮箱不能为空';
+                            this.$refs.youXiangInput.classList.add('error');
+                            valid = false;
+                        } else {
+                            var emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+                            if (!emailRegex.test(email)) {
+                                this.youXiangError = '邮箱格式不正确';
+                                this.$refs.youXiangInput.classList.add('error');
+                                valid = false;
+                            }
+                        }
+                        // 密码验证
+                        if (!this.miMa) {
+                            this.miMaError = '密码不能为空';
+                            this.$refs.miMaInput.classList.add('error');
+                            valid = false;
+                        } else if (this.miMa.length < 6 || this.miMa.length > 20) {
+                            this.miMaError = '密码长度需在6-20位之间';
+                            this.$refs.miMaInput.classList.add('error');
+                            valid = false;
+                        }
+                        // 确认密码验证
+                        if (!this.queRenMiMa) {
+                            this.queRenError = '请确认密码';
+                            this.$refs.queRenInput.classList.add('error');
+                            valid = false;
+                        } else if (this.miMa !== this.queRenMiMa) {
+                            this.queRenError = '两次输入的密码不一致';
+                            this.$refs.queRenInput.classList.add('error');
+                            valid = false;
+                        }
+                        return valid;
+                    },
+                    tiJiaoBiaoDan: function() {
+                        var refs = ['yongHuInput','youXiangInput','miMaInput','queRenInput'];
+                        var self = this;
+                        refs.forEach(function(r){ if (self.$refs[r]) self.$refs[r].classList.remove('error'); });
+                        this.yongHuError = this.youXiangError = this.quanXianError = '';
+                        this.miMaError = this.queRenError = '';
+                        if (!this.validate()) return;
+                        this.$refs.tianjiaForm.submit();
+                    },
+                    updateMiMaQiangDu: function(pwd) {
+                        var strength = 0;
+                        if (pwd.length >= 6) strength++; if (pwd.length >= 8) strength++; if (pwd.length >= 12) strength++;
+                        if (/[a-z]/.test(pwd)) strength++; if (/[A-Z]/.test(pwd)) strength++;
+                        if (/[0-9]/.test(pwd)) strength++; if (/[^a-zA-Z0-9]/.test(pwd)) strength++;
+                        var classes = ['','mi-ma-qiang-du-ruo','mi-ma-qiang-du-zhong','mi-ma-qiang-du-qiang','mi-ma-qiang-du-fei-qiang'];
+                        var texts = ['无','弱','中','强','非常强'];
+                        var idx = strength <= 2 ? 1 : (strength <= 4 ? 2 : (strength <= 6 ? 3 : 4));
+                        if (pwd.length === 0) idx = 0;
+                        this.miMaQiangDuClass = classes[idx];
+                        this.miMaQiangDuText = '密码强度：' + texts[idx];
+                    },
+                    qiDongDanChuJiShi: function() {
+                        var self = this;
+                        if (this.fadeTimer) clearTimeout(this.fadeTimer);
+                        this.fadeTimer = setTimeout(function() {
+                            self.cuoWuMsg = null;
+                        }, 5000);
+                    },
+                    // 新增：成功消息显示10秒后跳转到登录页
+                    qiDongChengGongTiaoZhuan: function() {
+                        var self = this;
+                        if (this.successTimer) clearTimeout(this.successTimer);
+                        this.successTimer = setTimeout(function() {
+                            self.chengGongMsg = null;
+                            window.location.href = '@Url.Action("DengLuYe", "DengLu")';
+                        }, 10000); // 10秒后跳转
+                    },
+                    // 保留原方法名，但内部调用新逻辑（兼容性）
+                    qiDongChengGongXiaoShi: function() {
+                        this.qiDongChengGongTiaoZhuan();
+                    }
+                }, 
+                watch: {
+                    yongHuMing: function() { this.yongHuError = ''; this.$refs.yongHuInput.classList.remove('error'); },
+                    youXiang: function() { this.youXiangError = ''; this.$refs.youXiangInput.classList.remove('error'); },
+                    miMa: function(v) { this.miMaError = ''; this.$refs.miMaInput.classList.remove('error'); this.updateMiMaQiangDu(v); },
+                    queRenMiMa: function(v) { this.queRenError = ''; this.$refs.queRenInput.classList.remove('error'); },
+                    cuoWuMsg: function(v) { if (v) { this.qiDongDanChuJiShi(); } },
+                    // 如果成功消息通过其他方式赋值，也能触发跳转
+                    chengGongMsg: function(newVal) {
+                        if (newVal) {
+                            this.qiDongChengGongTiaoZhuan();
+                        }
+                    }
+                },
+                beforeDestroy: function() {
+                    if (this.fadeTimer) clearTimeout(this.fadeTimer);
+                    if (this.successTimer) clearTimeout(this.successTimer);
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

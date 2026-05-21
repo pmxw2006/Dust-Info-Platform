@@ -1,0 +1,219 @@
+﻿@model WebApplication1.Models.GeRenZhongXin.XiuGaiMiMaViewModel
+@{
+    Layout = "~/Views/Shared/_YongHu.cshtml";
+    ViewBag.Title = "修改密码";
+    string cuoWuMsg = TempData["ErrorMessage"]?.ToString();
+    string chengGongMsg = TempData["SuccessMessage"]?.ToString();   
+    bool skipAnimation = TempData["SkipAnimation"] != null && (bool)TempData["SkipAnimation"];
+}
+@section styles {
+    <link href="~/CSS/GongGong/DengLu/DengLuGongGong.css" rel="stylesheet" />
+    <link href="~/CSS/GeRenZhongXin/XiuGaiMiMa.css" rel="stylesheet" />
+}
+
+<div id="xiugaimima-app" v-cloak>
+    <div class="xiu-gai-mi-ma">
+        <!-- 成功提示区域（必须存在） -->
+        <div v-if="chengGongMsg" class="chenggong-tishi" style="display:block;">{{ chengGongMsg }}</div>
+        <!-- 错误提示 -->
+        <div v-if="cuoWuMsg" class="cuowu-tishi" style="display:block;" :class="{ 'fade-out': isFadingOut }">{{ cuoWuMsg }}</div>
+
+        <!-- 头部 -->
+        <div class="tou-bu">
+            <h2>修改密码</h2>
+            <div class="fu-biao-ti">请设置新的登录密码</div>
+        </div>
+
+        @{
+            var formClasses = "mi-ma-xin-xi-qu";
+            if (skipAnimation) { formClasses += " skip-fadein"; }
+        }
+        @using (Html.BeginForm("XiuGaiMiMa", "YongGeRenZhongXin", FormMethod.Post, new { @class = formClasses, @ref = "xiugaiForm" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <!-- 当前密码 -->
+            <div class="mi-ma-xiang-mu">
+                <span class="mi-ma-biao-qian">当前密码</span>
+                @Html.PasswordFor(m => m.DangQianMiMa, new { @class = "mi-ma-shu-ru-kuang", placeholder = "请输入当前密码", v_model = "dangQianMiMa", @ref = "dangQianInput" })
+                <span class="tishi"><span v-if="dangQianError">{{ dangQianError }}</span><span v-else> </span></span>
+            </div>
+
+            <!-- 新密码 -->
+            <div class="mi-ma-xiang-mu">
+                <span class="mi-ma-biao-qian">新密码</span>
+                @Html.PasswordFor(m => m.XinMiMa, new { @class = "mi-ma-shu-ru-kuang", placeholder = "请输入新密码（6-20位）", v_model = "xinMiMa", @ref = "xinMiMaInput" })
+                <div class="MiMaQiangDuTiao" :class="miMaQiangDuClass"></div>
+                <span class="mi-ma-ti-shi">{{ miMaQiangDuText }}</span>
+                <span class="tishi"><span v-if="xinMiMaError">{{ xinMiMaError }}</span><span v-else> </span></span>
+            </div>
+
+            <!-- 确认新密码 -->
+            <div class="mi-ma-xiang-mu">
+                <span class="mi-ma-biao-qian">确认新密码</span>
+                @Html.PasswordFor(m => m.QueRenMiMa, new { @class = "mi-ma-shu-ru-kuang", placeholder = "请再次输入新密码", v_model = "queRenMiMa", @ref = "queRenInput" })
+                <span class="tishi"><span v-if="queRenError">{{ queRenError }}</span><span v-else> </span></span>
+            </div>
+
+            <!-- 密码要求 -->
+            <div class="mi-ma-yao-qiu">
+                <div class="yao-qiu-biao-ti">密码要求：</div>
+                <ul>
+                    <li>密码长度6-20位</li>
+                    <li>建议包含字母大小写、数字和特殊字符</li>
+                    <li>新密码不能与当前密码相同</li>
+                </ul>
+            </div>
+
+            <!-- 按钮区域 -->
+            <div class="an-niu-zu">
+                <button type="button" class="an-niu-cheng-gong" @@click="tiJiaoBiaoDan">保存密码</button>
+                <a href="@Url.Action("GeRenXinXi", "YongGeRenZhongXin")" class="fan-hui-lian-jie">← 返回个人中心</a>
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+    <script>
+        new Vue({
+            el: '#xiugaimima-app',
+            data: {
+                dangQianMiMa: '',
+                xinMiMa: '',
+                queRenMiMa: '',
+                dangQianError: '',
+                xinMiMaError: '',
+                queRenError: '',
+                cuoWuMsg: @Html.Raw(Json.Encode(cuoWuMsg)),
+                chengGongMsg: @Html.Raw(Json.Encode(chengGongMsg)),   // 从TempData中获取成功消息
+                isFadingOut: false,
+                fadeTimer: null,
+                successTimer: null,        // 新增：成功跳转计时器
+                miMaQiangDuClass: '',
+                miMaQiangDuText: '密码强度：无'
+            },
+            mounted: function() {
+                var self = this;
+                if (self.cuoWuMsg) {
+                    self.qiDongDanChuJiShi();
+                }
+                // 修改点：成功消息出现时，启动跳转计时器
+                if (self.chengGongMsg) {
+                    self.qiDongChengGongTiaoZhuan();
+                }
+            },
+            methods: {
+                qingChuCuoWu: function(field) {
+                    if (field === 'dangQian') {
+                        this.dangQianError = '';
+                        this.$refs.dangQianInput.classList.remove('error');
+                    } else if (field === 'xinMiMa') {
+                        this.xinMiMaError = '';
+                        this.$refs.xinMiMaInput.classList.remove('error');
+                    } else if (field === 'queRen') {
+                        this.queRenError = '';
+                        this.$refs.queRenInput.classList.remove('error');
+                    }
+                },
+                yanZhengBiaoDan: function() {
+                    var valid = true;
+                    if (!this.dangQianMiMa) {
+                        this.dangQianError = '当前密码不能为空';
+                        this.$refs.dangQianInput.classList.add('error');
+                        valid = false;
+                    }
+                    if (!this.xinMiMa) {
+                        this.xinMiMaError = '新密码不能为空';
+                        this.$refs.xinMiMaInput.classList.add('error');
+                        valid = false;
+                    } else if (this.xinMiMa.length < 6 || this.xinMiMa.length > 20) {
+                        this.xinMiMaError = '密码长度需在6-20位之间';
+                        this.$refs.xinMiMaInput.classList.add('error');
+                        valid = false;
+                    }
+                    if (this.xinMiMa !== this.queRenMiMa) {
+                        this.queRenError = '两次输入的密码不一致';
+                        this.$refs.queRenInput.classList.add('error');
+                        valid = false;
+                    }
+                    if (this.dangQianMiMa && this.xinMiMa && this.dangQianMiMa === this.xinMiMa) {
+                        this.xinMiMaError = '新密码不能与当前密码相同';
+                        this.$refs.xinMiMaInput.classList.add('error');
+                        valid = false;
+                    }
+                    return valid;
+                },
+                tiJiaoBiaoDan: function() {
+                    this.$refs.dangQianInput.classList.remove('error');
+                    this.$refs.xinMiMaInput.classList.remove('error');
+                    this.$refs.queRenInput.classList.remove('error');
+                    this.dangQianError = this.xinMiMaError = this.queRenError = '';
+                    if (!this.yanZhengBiaoDan()) return;
+                    this.$refs.xiugaiForm.submit();
+                },
+                updateMiMaQiangDu: function(pwd) {
+                    var strength = 0;
+                    if (pwd.length >= 6) strength++;
+                    if (pwd.length >= 8) strength++;
+                    if (pwd.length >= 12) strength++;
+                    if (/[a-z]/.test(pwd)) strength++;
+                    if (/[A-Z]/.test(pwd)) strength++;
+                    if (/[0-9]/.test(pwd)) strength++;
+                    if (/[^a-zA-Z0-9]/.test(pwd)) strength++;
+                    var classes = ['','mi-ma-qiang-du-ruo','mi-ma-qiang-du-zhong','mi-ma-qiang-du-qiang','mi-ma-qiang-du-fei-qiang'];
+                    var texts = ['无','弱','中','强','非常强'];
+                    var idx = strength <= 2 ? 1 : (strength <= 4 ? 2 : (strength <= 6 ? 3 : 4));
+                    if (pwd.length === 0) idx = 0;
+                    this.miMaQiangDuClass = classes[idx];
+                    this.miMaQiangDuText = '密码强度：' + texts[idx];
+                },
+                qiDongDanChuJiShi: function() {
+                    var self = this;
+                    if (this.fadeTimer) clearTimeout(this.fadeTimer);
+                    this.fadeTimer = setTimeout(function() {
+                        self.isFadingOut = true;
+                        setTimeout(function() {
+                            self.cuoWuMsg = null;
+                            self.isFadingOut = false;
+                        }, 500);
+                    }, 5000);
+                },
+                // 新增方法：成功消息显示2秒后跳转到登录页
+                qiDongChengGongTiaoZhuan: function() {
+                    var self = this;
+                    if (this.successTimer) clearTimeout(this.successTimer);
+                    this.successTimer = setTimeout(function() {
+                        self.chengGongMsg = null;
+                        window.location.href = '@Url.Action("DengLuYe", "DengLu")';
+                    }, 2000); // 2秒后跳转，用户可看清提示
+                }
+            },
+            watch: {
+                dangQianMiMa: function() { this.qingChuCuoWu('dangQian'); },
+                xinMiMa: function(v) {
+                    this.qingChuCuoWu('xinMiMa');
+                    this.updateMiMaQiangDu(v);
+                },
+                queRenMiMa: function() { this.qingChuCuoWu('queRen'); },
+                cuoWuMsg: function(newVal) {
+                    if (newVal) {
+                        this.isFadingOut = false;
+                        this.qiDongDanChuJiShi();
+                    }
+                },
+                // 如果成功消息通过其他方式被赋值，也能触发跳转（但此处仅在mounted中使用）
+                chengGongMsg: function(newVal) {
+                    if (newVal) {
+                        this.qiDongChengGongTiaoZhuan();
+                    }
+                }
+            },
+            beforeDestroy: function() {
+                if (this.fadeTimer) clearTimeout(this.fadeTimer);
+                if (this.successTimer) clearTimeout(this.successTimer);
+            }
+        });
+    </script>
+}

@@ -1,0 +1,1227 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="YouXiModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="DianZan">
+          <Key>
+            <PropertyRef Name="DianZanID" />
+          </Key>
+          <Property Name="DianZanID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="YongHuID" Type="int" Nullable="false" />
+          <Property Name="TieZiID" Type="int" Nullable="false" />
+          <Property Name="ZhuangTai" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FanKui">
+          <Key>
+            <PropertyRef Name="FanKuiID" />
+          </Key>
+          <Property Name="FanKuiID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="YongHuID" Type="int" Nullable="false" />
+          <Property Name="FanKuiNeiRong" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="FanKuiShiJian" Type="datetime" Nullable="false" />
+          <Property Name="ZhuangTai" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FengJinRiZhi">
+          <Key>
+            <PropertyRef Name="RiZhiID" />
+          </Key>
+          <Property Name="RiZhiID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="YongHuID" Type="int" Nullable="false" />
+          <Property Name="YuanYin" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="FengJinShiJian" Type="datetime" Nullable="false" />
+          <Property Name="JieFengShiJian" Type="datetime" />
+          <Property Name="CaoZuoRen" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GuanZhuYongHu">
+          <Key>
+            <PropertyRef Name="GuanZhuYongHuID" />
+          </Key>
+          <Property Name="GuanZhuYongHuID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="YongHuIDYI" Type="int" Nullable="false" />
+          <Property Name="YongHuIDER" Type="int" Nullable="false" />
+          <Property Name="GuangZhuZhuangTai" Type="int" Nullable="false" />
+          <Property Name="HuiGuanZhuangTai" Type="int" Nullable="false" />
+          <Property Name="LaiHeiZhuangTai" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LiaoTianShi1">
+          <Key>
+            <PropertyRef Name="XiaoXiID" />
+          </Key>
+          <Property Name="XiaoXiID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="YongHuID" Type="int" Nullable="false" />
+          <Property Name="NeiRong" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="FaSongShiJian" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LiaoTianShi2">
+          <Key>
+            <PropertyRef Name="XiaoXiID" />
+          </Key>
+          <Property Name="XiaoXiID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="YongHuID" Type="int" Nullable="false" />
+          <Property Name="NeiRong" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="FaSongShiJian" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LiaoTianShi3">
+          <Key>
+            <PropertyRef Name="XiaoXiID" />
+          </Key>
+          <Property Name="XiaoXiID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="YongHuID" Type="int" Nullable="false" />
+          <Property Name="NeiRong" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="FaSongShiJian" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TieZi">
+          <Key>
+            <PropertyRef Name="TieZiID" />
+          </Key>
+          <Property Name="TieZiID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="YongHuID" Type="int" Nullable="false" />
+          <Property Name="TieZiMing" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="FaBuShiJian" Type="datetime" Nullable="false" />
+          <Property Name="ZhuangTai" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TieZiXiaJiaRiZhi">
+          <Key>
+            <PropertyRef Name="RiZhiID" />
+          </Key>
+          <Property Name="RiZhiID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TieZiID" Type="int" Nullable="false" />
+          <Property Name="YuanYin" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="XiaJiaShiJian" Type="datetime" Nullable="false" />
+          <Property Name="HuiFuShiJian" Type="datetime" />
+          <Property Name="CaoZuoRen" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TieziXiangXi">
+          <Key>
+            <PropertyRef Name="XiangXIID" />
+          </Key>
+          <Property Name="XiangXIID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TieZiID" Type="int" Nullable="false" />
+          <Property Name="NeiRong" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="XinXi">
+          <Key>
+            <PropertyRef Name="XinXiID" />
+          </Key>
+          <Property Name="XinXiID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FaSongZheID" Type="int" Nullable="false" />
+          <Property Name="JieShouZheID" Type="int" Nullable="false" />
+          <Property Name="XinXiNeiRong" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ChuangJianShiJian" Type="datetime" Nullable="false" />
+          <Property Name="ZhuangTai" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="YongHu">
+          <Key>
+            <PropertyRef Name="YongHuID" />
+          </Key>
+          <Property Name="YongHuID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="YongHuMing" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="MiMaHaXi" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="YanZhi" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="YouXiang" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ZhuangTai" Type="int" Nullable="false" />
+          <Property Name="ChuangJianShiJian" Type="datetime" Nullable="false" />
+          <Property Name="QuanXian" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ZhaoPian">
+          <Key>
+            <PropertyRef Name="ZhaoPianID" />
+          </Key>
+          <Property Name="ZhaoPianID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TieZiID" Type="int" Nullable="false" />
+          <Property Name="Lujing" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ZhuPinglun">
+          <Key>
+            <PropertyRef Name="ZhuPingLunID" />
+          </Key>
+          <Property Name="ZhuPingLunID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TieZiID" Type="int" Nullable="false" />
+          <Property Name="YongHuID" Type="int" Nullable="false" />
+          <Property Name="PingLuNeiRong" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="PingLuShiJian" Type="date" Nullable="false" />
+          <Property Name="ZhuangTai" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ZiPinglun">
+          <Key>
+            <PropertyRef Name="ZiPingLunID" />
+          </Key>
+          <Property Name="ZiPingLunID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TieZiID" Type="int" Nullable="false" />
+          <Property Name="YongHuID" Type="int" Nullable="false" />
+          <Property Name="PingLuNeiRong" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="PingLuShiJian" Type="date" Nullable="false" />
+          <Property Name="ZhuPingLuID" Type="int" Nullable="false" />
+          <Property Name="ZhuangTai" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_DianZan_TieZi">
+          <End Role="TieZi" Type="Self.TieZi" Multiplicity="1" />
+          <End Role="DianZan" Type="Self.DianZan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TieZi">
+              <PropertyRef Name="TieZiID" />
+            </Principal>
+            <Dependent Role="DianZan">
+              <PropertyRef Name="TieZiID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DianZan_YongHu">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="DianZan" Type="Self.DianZan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="DianZan">
+              <PropertyRef Name="YongHuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FanKui_YongHu">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="FanKui" Type="Self.FanKui" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="FanKui">
+              <PropertyRef Name="YongHuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FengJinRiZhi_YongHu">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="FengJinRiZhi" Type="Self.FengJinRiZhi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="FengJinRiZhi">
+              <PropertyRef Name="YongHuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GuanZhuYongHu_YongHuER">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="GuanZhuYongHu" Type="Self.GuanZhuYongHu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="GuanZhuYongHu">
+              <PropertyRef Name="YongHuIDER" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GuanZhuYongHu_YongHuYI">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="GuanZhuYongHu" Type="Self.GuanZhuYongHu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="GuanZhuYongHu">
+              <PropertyRef Name="YongHuIDYI" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LiaoTianShi1_YongHu">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="LiaoTianShi1" Type="Self.LiaoTianShi1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="LiaoTianShi1">
+              <PropertyRef Name="YongHuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LiaoTianShi2_YongHu">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="LiaoTianShi2" Type="Self.LiaoTianShi2" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="LiaoTianShi2">
+              <PropertyRef Name="YongHuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LiaoTianShi3_YongHu">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="LiaoTianShi3" Type="Self.LiaoTianShi3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="LiaoTianShi3">
+              <PropertyRef Name="YongHuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TieZi_YongHu">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="TieZi" Type="Self.TieZi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="TieZi">
+              <PropertyRef Name="YongHuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TieZiXiaJiaRiZhi_TieZi">
+          <End Role="TieZi" Type="Self.TieZi" Multiplicity="1" />
+          <End Role="TieZiXiaJiaRiZhi" Type="Self.TieZiXiaJiaRiZhi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TieZi">
+              <PropertyRef Name="TieZiID" />
+            </Principal>
+            <Dependent Role="TieZiXiaJiaRiZhi">
+              <PropertyRef Name="TieZiID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TieziXiangXi_TieZi">
+          <End Role="TieZi" Type="Self.TieZi" Multiplicity="1" />
+          <End Role="TieziXiangXi" Type="Self.TieziXiangXi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TieZi">
+              <PropertyRef Name="TieZiID" />
+            </Principal>
+            <Dependent Role="TieziXiangXi">
+              <PropertyRef Name="TieZiID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_XinXi_FaSongZhe">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="XinXi" Type="Self.XinXi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="XinXi">
+              <PropertyRef Name="FaSongZheID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_XinXi_JieShouZhe">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="XinXi" Type="Self.XinXi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="XinXi">
+              <PropertyRef Name="JieShouZheID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZhaoPian_TieZi">
+          <End Role="TieZi" Type="Self.TieZi" Multiplicity="1" />
+          <End Role="ZhaoPian" Type="Self.ZhaoPian" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TieZi">
+              <PropertyRef Name="TieZiID" />
+            </Principal>
+            <Dependent Role="ZhaoPian">
+              <PropertyRef Name="TieZiID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZhuPinglun_TieZi">
+          <End Role="TieZi" Type="Self.TieZi" Multiplicity="1" />
+          <End Role="ZhuPinglun" Type="Self.ZhuPinglun" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TieZi">
+              <PropertyRef Name="TieZiID" />
+            </Principal>
+            <Dependent Role="ZhuPinglun">
+              <PropertyRef Name="TieZiID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZhuPinglun_YongHu">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="ZhuPinglun" Type="Self.ZhuPinglun" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="ZhuPinglun">
+              <PropertyRef Name="YongHuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZiPinglun_TieZi">
+          <End Role="TieZi" Type="Self.TieZi" Multiplicity="1" />
+          <End Role="ZiPinglun" Type="Self.ZiPinglun" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TieZi">
+              <PropertyRef Name="TieZiID" />
+            </Principal>
+            <Dependent Role="ZiPinglun">
+              <PropertyRef Name="TieZiID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZiPinglun_YongHu">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="ZiPinglun" Type="Self.ZiPinglun" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="ZiPinglun">
+              <PropertyRef Name="YongHuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZiPinglun_ZhuPinglun">
+          <End Role="ZhuPinglun" Type="Self.ZhuPinglun" Multiplicity="1" />
+          <End Role="ZiPinglun" Type="Self.ZiPinglun" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZhuPinglun">
+              <PropertyRef Name="ZhuPingLunID" />
+            </Principal>
+            <Dependent Role="ZiPinglun">
+              <PropertyRef Name="ZhuPingLuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="YouXiModelStoreContainer">
+          <EntitySet Name="DianZan" EntityType="Self.DianZan" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FanKui" EntityType="Self.FanKui" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FengJinRiZhi" EntityType="Self.FengJinRiZhi" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GuanZhuYongHu" EntityType="Self.GuanZhuYongHu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LiaoTianShi1" EntityType="Self.LiaoTianShi1" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LiaoTianShi2" EntityType="Self.LiaoTianShi2" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LiaoTianShi3" EntityType="Self.LiaoTianShi3" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TieZi" EntityType="Self.TieZi" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TieZiXiaJiaRiZhi" EntityType="Self.TieZiXiaJiaRiZhi" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TieziXiangXi" EntityType="Self.TieziXiangXi" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="XinXi" EntityType="Self.XinXi" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="YongHu" EntityType="Self.YongHu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ZhaoPian" EntityType="Self.ZhaoPian" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ZhuPinglun" EntityType="Self.ZhuPinglun" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ZiPinglun" EntityType="Self.ZiPinglun" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_DianZan_TieZi" Association="Self.FK_DianZan_TieZi">
+            <End Role="TieZi" EntitySet="TieZi" />
+            <End Role="DianZan" EntitySet="DianZan" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DianZan_YongHu" Association="Self.FK_DianZan_YongHu">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="DianZan" EntitySet="DianZan" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FanKui_YongHu" Association="Self.FK_FanKui_YongHu">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="FanKui" EntitySet="FanKui" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FengJinRiZhi_YongHu" Association="Self.FK_FengJinRiZhi_YongHu">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="FengJinRiZhi" EntitySet="FengJinRiZhi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GuanZhuYongHu_YongHuER" Association="Self.FK_GuanZhuYongHu_YongHuER">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="GuanZhuYongHu" EntitySet="GuanZhuYongHu" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GuanZhuYongHu_YongHuYI" Association="Self.FK_GuanZhuYongHu_YongHuYI">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="GuanZhuYongHu" EntitySet="GuanZhuYongHu" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LiaoTianShi1_YongHu" Association="Self.FK_LiaoTianShi1_YongHu">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="LiaoTianShi1" EntitySet="LiaoTianShi1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LiaoTianShi2_YongHu" Association="Self.FK_LiaoTianShi2_YongHu">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="LiaoTianShi2" EntitySet="LiaoTianShi2" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LiaoTianShi3_YongHu" Association="Self.FK_LiaoTianShi3_YongHu">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="LiaoTianShi3" EntitySet="LiaoTianShi3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TieZi_YongHu" Association="Self.FK_TieZi_YongHu">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="TieZi" EntitySet="TieZi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TieZiXiaJiaRiZhi_TieZi" Association="Self.FK_TieZiXiaJiaRiZhi_TieZi">
+            <End Role="TieZi" EntitySet="TieZi" />
+            <End Role="TieZiXiaJiaRiZhi" EntitySet="TieZiXiaJiaRiZhi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TieziXiangXi_TieZi" Association="Self.FK_TieziXiangXi_TieZi">
+            <End Role="TieZi" EntitySet="TieZi" />
+            <End Role="TieziXiangXi" EntitySet="TieziXiangXi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_XinXi_FaSongZhe" Association="Self.FK_XinXi_FaSongZhe">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="XinXi" EntitySet="XinXi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_XinXi_JieShouZhe" Association="Self.FK_XinXi_JieShouZhe">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="XinXi" EntitySet="XinXi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZhaoPian_TieZi" Association="Self.FK_ZhaoPian_TieZi">
+            <End Role="TieZi" EntitySet="TieZi" />
+            <End Role="ZhaoPian" EntitySet="ZhaoPian" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZhuPinglun_TieZi" Association="Self.FK_ZhuPinglun_TieZi">
+            <End Role="TieZi" EntitySet="TieZi" />
+            <End Role="ZhuPinglun" EntitySet="ZhuPinglun" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZhuPinglun_YongHu" Association="Self.FK_ZhuPinglun_YongHu">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="ZhuPinglun" EntitySet="ZhuPinglun" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZiPinglun_TieZi" Association="Self.FK_ZiPinglun_TieZi">
+            <End Role="TieZi" EntitySet="TieZi" />
+            <End Role="ZiPinglun" EntitySet="ZiPinglun" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZiPinglun_YongHu" Association="Self.FK_ZiPinglun_YongHu">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="ZiPinglun" EntitySet="ZiPinglun" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZiPinglun_ZhuPinglun" Association="Self.FK_ZiPinglun_ZhuPinglun">
+            <End Role="ZhuPinglun" EntitySet="ZhuPinglun" />
+            <End Role="ZiPinglun" EntitySet="ZiPinglun" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="YouXiModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="DianZan">
+          <Key>
+            <PropertyRef Name="DianZanID" />
+          </Key>
+          <Property Name="DianZanID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="YongHuID" Type="Int32" Nullable="false" />
+          <Property Name="TieZiID" Type="Int32" Nullable="false" />
+          <Property Name="ZhuangTai" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="TieZi" Relationship="Self.FK_DianZan_TieZi" FromRole="DianZan" ToRole="TieZi" />
+          <NavigationProperty Name="YongHu" Relationship="Self.FK_DianZan_YongHu" FromRole="DianZan" ToRole="YongHu" />
+        </EntityType>
+        <EntityType Name="FanKui">
+          <Key>
+            <PropertyRef Name="FanKuiID" />
+          </Key>
+          <Property Name="FanKuiID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="YongHuID" Type="Int32" Nullable="false" />
+          <Property Name="FanKuiNeiRong" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FanKuiShiJian" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ZhuangTai" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="YongHu" Relationship="Self.FK_FanKui_YongHu" FromRole="FanKui" ToRole="YongHu" />
+        </EntityType>
+        <EntityType Name="FengJinRiZhi">
+          <Key>
+            <PropertyRef Name="RiZhiID" />
+          </Key>
+          <Property Name="RiZhiID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="YongHuID" Type="Int32" Nullable="false" />
+          <Property Name="YuanYin" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FengJinShiJian" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="JieFengShiJian" Type="DateTime" Precision="3" />
+          <Property Name="CaoZuoRen" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="YongHu" Relationship="Self.FK_FengJinRiZhi_YongHu" FromRole="FengJinRiZhi" ToRole="YongHu" />
+        </EntityType>
+        <EntityType Name="GuanZhuYongHu">
+          <Key>
+            <PropertyRef Name="GuanZhuYongHuID" />
+          </Key>
+          <Property Name="GuanZhuYongHuID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="YongHuIDYI" Type="Int32" Nullable="false" />
+          <Property Name="YongHuIDER" Type="Int32" Nullable="false" />
+          <Property Name="GuangZhuZhuangTai" Type="Int32" Nullable="false" />
+          <Property Name="HuiGuanZhuangTai" Type="Int32" Nullable="false" />
+          <Property Name="LaiHeiZhuangTai" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="YongHu" Relationship="Self.FK_GuanZhuYongHu_YongHuER" FromRole="GuanZhuYongHu" ToRole="YongHu" />
+          <NavigationProperty Name="YongHu1" Relationship="Self.FK_GuanZhuYongHu_YongHuYI" FromRole="GuanZhuYongHu" ToRole="YongHu" />
+        </EntityType>
+        <EntityType Name="LiaoTianShi1">
+          <Key>
+            <PropertyRef Name="XiaoXiID" />
+          </Key>
+          <Property Name="XiaoXiID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="YongHuID" Type="Int32" Nullable="false" />
+          <Property Name="NeiRong" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FaSongShiJian" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="YongHu" Relationship="Self.FK_LiaoTianShi1_YongHu" FromRole="LiaoTianShi1" ToRole="YongHu" />
+        </EntityType>
+        <EntityType Name="LiaoTianShi2">
+          <Key>
+            <PropertyRef Name="XiaoXiID" />
+          </Key>
+          <Property Name="XiaoXiID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="YongHuID" Type="Int32" Nullable="false" />
+          <Property Name="NeiRong" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FaSongShiJian" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="YongHu" Relationship="Self.FK_LiaoTianShi2_YongHu" FromRole="LiaoTianShi2" ToRole="YongHu" />
+        </EntityType>
+        <EntityType Name="LiaoTianShi3">
+          <Key>
+            <PropertyRef Name="XiaoXiID" />
+          </Key>
+          <Property Name="XiaoXiID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="YongHuID" Type="Int32" Nullable="false" />
+          <Property Name="NeiRong" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FaSongShiJian" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="YongHu" Relationship="Self.FK_LiaoTianShi3_YongHu" FromRole="LiaoTianShi3" ToRole="YongHu" />
+        </EntityType>
+        <EntityType Name="TieZi">
+          <Key>
+            <PropertyRef Name="TieZiID" />
+          </Key>
+          <Property Name="TieZiID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="YongHuID" Type="Int32" Nullable="false" />
+          <Property Name="TieZiMing" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FaBuShiJian" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ZhuangTai" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="DianZan" Relationship="Self.FK_DianZan_TieZi" FromRole="TieZi" ToRole="DianZan" />
+          <NavigationProperty Name="YongHu" Relationship="Self.FK_TieZi_YongHu" FromRole="TieZi" ToRole="YongHu" />
+          <NavigationProperty Name="TieZiXiaJiaRiZhi" Relationship="Self.FK_TieZiXiaJiaRiZhi_TieZi" FromRole="TieZi" ToRole="TieZiXiaJiaRiZhi" />
+          <NavigationProperty Name="TieziXiangXi" Relationship="Self.FK_TieziXiangXi_TieZi" FromRole="TieZi" ToRole="TieziXiangXi" />
+          <NavigationProperty Name="ZhaoPian" Relationship="Self.FK_ZhaoPian_TieZi" FromRole="TieZi" ToRole="ZhaoPian" />
+          <NavigationProperty Name="ZhuPinglun" Relationship="Self.FK_ZhuPinglun_TieZi" FromRole="TieZi" ToRole="ZhuPinglun" />
+          <NavigationProperty Name="ZiPinglun" Relationship="Self.FK_ZiPinglun_TieZi" FromRole="TieZi" ToRole="ZiPinglun" />
+        </EntityType>
+        <EntityType Name="TieZiXiaJiaRiZhi">
+          <Key>
+            <PropertyRef Name="RiZhiID" />
+          </Key>
+          <Property Name="RiZhiID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TieZiID" Type="Int32" Nullable="false" />
+          <Property Name="YuanYin" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="XiaJiaShiJian" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="HuiFuShiJian" Type="DateTime" Precision="3" />
+          <Property Name="CaoZuoRen" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="TieZi" Relationship="Self.FK_TieZiXiaJiaRiZhi_TieZi" FromRole="TieZiXiaJiaRiZhi" ToRole="TieZi" />
+        </EntityType>
+        <EntityType Name="TieziXiangXi">
+          <Key>
+            <PropertyRef Name="XiangXIID" />
+          </Key>
+          <Property Name="XiangXIID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TieZiID" Type="Int32" Nullable="false" />
+          <Property Name="NeiRong" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="TieZi" Relationship="Self.FK_TieziXiangXi_TieZi" FromRole="TieziXiangXi" ToRole="TieZi" />
+        </EntityType>
+        <EntityType Name="XinXi">
+          <Key>
+            <PropertyRef Name="XinXiID" />
+          </Key>
+          <Property Name="XinXiID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FaSongZheID" Type="Int32" Nullable="false" />
+          <Property Name="JieShouZheID" Type="Int32" Nullable="false" />
+          <Property Name="XinXiNeiRong" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ChuangJianShiJian" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ZhuangTai" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="YongHu" Relationship="Self.FK_XinXi_FaSongZhe" FromRole="XinXi" ToRole="YongHu" />
+          <NavigationProperty Name="YongHu1" Relationship="Self.FK_XinXi_JieShouZhe" FromRole="XinXi" ToRole="YongHu" />
+        </EntityType>
+        <EntityType Name="YongHu">
+          <Key>
+            <PropertyRef Name="YongHuID" />
+          </Key>
+          <Property Name="YongHuID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="YongHuMing" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MiMaHaXi" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="YanZhi" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="YouXiang" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ZhuangTai" Type="Int32" Nullable="false" />
+          <Property Name="ChuangJianShiJian" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="QuanXian" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="DianZan" Relationship="Self.FK_DianZan_YongHu" FromRole="YongHu" ToRole="DianZan" />
+          <NavigationProperty Name="FanKui" Relationship="Self.FK_FanKui_YongHu" FromRole="YongHu" ToRole="FanKui" />
+          <NavigationProperty Name="FengJinRiZhi" Relationship="Self.FK_FengJinRiZhi_YongHu" FromRole="YongHu" ToRole="FengJinRiZhi" />
+          <NavigationProperty Name="GuanZhuYongHu" Relationship="Self.FK_GuanZhuYongHu_YongHuER" FromRole="YongHu" ToRole="GuanZhuYongHu" />
+          <NavigationProperty Name="GuanZhuYongHu1" Relationship="Self.FK_GuanZhuYongHu_YongHuYI" FromRole="YongHu" ToRole="GuanZhuYongHu" />
+          <NavigationProperty Name="LiaoTianShi1" Relationship="Self.FK_LiaoTianShi1_YongHu" FromRole="YongHu" ToRole="LiaoTianShi1" />
+          <NavigationProperty Name="LiaoTianShi2" Relationship="Self.FK_LiaoTianShi2_YongHu" FromRole="YongHu" ToRole="LiaoTianShi2" />
+          <NavigationProperty Name="LiaoTianShi3" Relationship="Self.FK_LiaoTianShi3_YongHu" FromRole="YongHu" ToRole="LiaoTianShi3" />
+          <NavigationProperty Name="TieZi" Relationship="Self.FK_TieZi_YongHu" FromRole="YongHu" ToRole="TieZi" />
+          <NavigationProperty Name="XinXi" Relationship="Self.FK_XinXi_FaSongZhe" FromRole="YongHu" ToRole="XinXi" />
+          <NavigationProperty Name="XinXi1" Relationship="Self.FK_XinXi_JieShouZhe" FromRole="YongHu" ToRole="XinXi" />
+          <NavigationProperty Name="ZhuPinglun" Relationship="Self.FK_ZhuPinglun_YongHu" FromRole="YongHu" ToRole="ZhuPinglun" />
+          <NavigationProperty Name="ZiPinglun" Relationship="Self.FK_ZiPinglun_YongHu" FromRole="YongHu" ToRole="ZiPinglun" />
+        </EntityType>
+        <EntityType Name="ZhaoPian">
+          <Key>
+            <PropertyRef Name="ZhaoPianID" />
+          </Key>
+          <Property Name="ZhaoPianID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TieZiID" Type="Int32" Nullable="false" />
+          <Property Name="Lujing" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="TieZi" Relationship="Self.FK_ZhaoPian_TieZi" FromRole="ZhaoPian" ToRole="TieZi" />
+        </EntityType>
+        <EntityType Name="ZhuPinglun">
+          <Key>
+            <PropertyRef Name="ZhuPingLunID" />
+          </Key>
+          <Property Name="ZhuPingLunID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TieZiID" Type="Int32" Nullable="false" />
+          <Property Name="YongHuID" Type="Int32" Nullable="false" />
+          <Property Name="PingLuNeiRong" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PingLuShiJian" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ZhuangTai" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="TieZi" Relationship="Self.FK_ZhuPinglun_TieZi" FromRole="ZhuPinglun" ToRole="TieZi" />
+          <NavigationProperty Name="YongHu" Relationship="Self.FK_ZhuPinglun_YongHu" FromRole="ZhuPinglun" ToRole="YongHu" />
+          <NavigationProperty Name="ZiPinglun" Relationship="Self.FK_ZiPinglun_ZhuPinglun" FromRole="ZhuPinglun" ToRole="ZiPinglun" />
+        </EntityType>
+        <EntityType Name="ZiPinglun">
+          <Key>
+            <PropertyRef Name="ZiPingLunID" />
+          </Key>
+          <Property Name="ZiPingLunID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TieZiID" Type="Int32" Nullable="false" />
+          <Property Name="YongHuID" Type="Int32" Nullable="false" />
+          <Property Name="PingLuNeiRong" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PingLuShiJian" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ZhuPingLuID" Type="Int32" Nullable="false" />
+          <Property Name="ZhuangTai" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="TieZi" Relationship="Self.FK_ZiPinglun_TieZi" FromRole="ZiPinglun" ToRole="TieZi" />
+          <NavigationProperty Name="YongHu" Relationship="Self.FK_ZiPinglun_YongHu" FromRole="ZiPinglun" ToRole="YongHu" />
+          <NavigationProperty Name="ZhuPinglun" Relationship="Self.FK_ZiPinglun_ZhuPinglun" FromRole="ZiPinglun" ToRole="ZhuPinglun" />
+        </EntityType>
+        <Association Name="FK_DianZan_TieZi">
+          <End Role="TieZi" Type="Self.TieZi" Multiplicity="1" />
+          <End Role="DianZan" Type="Self.DianZan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TieZi">
+              <PropertyRef Name="TieZiID" />
+            </Principal>
+            <Dependent Role="DianZan">
+              <PropertyRef Name="TieZiID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DianZan_YongHu">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="DianZan" Type="Self.DianZan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="DianZan">
+              <PropertyRef Name="YongHuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FanKui_YongHu">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="FanKui" Type="Self.FanKui" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="FanKui">
+              <PropertyRef Name="YongHuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FengJinRiZhi_YongHu">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="FengJinRiZhi" Type="Self.FengJinRiZhi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="FengJinRiZhi">
+              <PropertyRef Name="YongHuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GuanZhuYongHu_YongHuER">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="GuanZhuYongHu" Type="Self.GuanZhuYongHu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="GuanZhuYongHu">
+              <PropertyRef Name="YongHuIDER" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GuanZhuYongHu_YongHuYI">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="GuanZhuYongHu" Type="Self.GuanZhuYongHu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="GuanZhuYongHu">
+              <PropertyRef Name="YongHuIDYI" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LiaoTianShi1_YongHu">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="LiaoTianShi1" Type="Self.LiaoTianShi1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="LiaoTianShi1">
+              <PropertyRef Name="YongHuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LiaoTianShi2_YongHu">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="LiaoTianShi2" Type="Self.LiaoTianShi2" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="LiaoTianShi2">
+              <PropertyRef Name="YongHuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LiaoTianShi3_YongHu">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="LiaoTianShi3" Type="Self.LiaoTianShi3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="LiaoTianShi3">
+              <PropertyRef Name="YongHuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TieZi_YongHu">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="TieZi" Type="Self.TieZi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="TieZi">
+              <PropertyRef Name="YongHuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TieZiXiaJiaRiZhi_TieZi">
+          <End Role="TieZi" Type="Self.TieZi" Multiplicity="1" />
+          <End Role="TieZiXiaJiaRiZhi" Type="Self.TieZiXiaJiaRiZhi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TieZi">
+              <PropertyRef Name="TieZiID" />
+            </Principal>
+            <Dependent Role="TieZiXiaJiaRiZhi">
+              <PropertyRef Name="TieZiID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TieziXiangXi_TieZi">
+          <End Role="TieZi" Type="Self.TieZi" Multiplicity="1" />
+          <End Role="TieziXiangXi" Type="Self.TieziXiangXi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TieZi">
+              <PropertyRef Name="TieZiID" />
+            </Principal>
+            <Dependent Role="TieziXiangXi">
+              <PropertyRef Name="TieZiID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZhaoPian_TieZi">
+          <End Role="TieZi" Type="Self.TieZi" Multiplicity="1" />
+          <End Role="ZhaoPian" Type="Self.ZhaoPian" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TieZi">
+              <PropertyRef Name="TieZiID" />
+            </Principal>
+            <Dependent Role="ZhaoPian">
+              <PropertyRef Name="TieZiID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZhuPinglun_TieZi">
+          <End Role="TieZi" Type="Self.TieZi" Multiplicity="1" />
+          <End Role="ZhuPinglun" Type="Self.ZhuPinglun" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TieZi">
+              <PropertyRef Name="TieZiID" />
+            </Principal>
+            <Dependent Role="ZhuPinglun">
+              <PropertyRef Name="TieZiID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZiPinglun_TieZi">
+          <End Role="TieZi" Type="Self.TieZi" Multiplicity="1" />
+          <End Role="ZiPinglun" Type="Self.ZiPinglun" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TieZi">
+              <PropertyRef Name="TieZiID" />
+            </Principal>
+            <Dependent Role="ZiPinglun">
+              <PropertyRef Name="TieZiID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_XinXi_FaSongZhe">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="XinXi" Type="Self.XinXi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="XinXi">
+              <PropertyRef Name="FaSongZheID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_XinXi_JieShouZhe">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="XinXi" Type="Self.XinXi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="XinXi">
+              <PropertyRef Name="JieShouZheID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZhuPinglun_YongHu">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="ZhuPinglun" Type="Self.ZhuPinglun" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="ZhuPinglun">
+              <PropertyRef Name="YongHuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZiPinglun_YongHu">
+          <End Role="YongHu" Type="Self.YongHu" Multiplicity="1" />
+          <End Role="ZiPinglun" Type="Self.ZiPinglun" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YongHu">
+              <PropertyRef Name="YongHuID" />
+            </Principal>
+            <Dependent Role="ZiPinglun">
+              <PropertyRef Name="YongHuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ZiPinglun_ZhuPinglun">
+          <End Role="ZhuPinglun" Type="Self.ZhuPinglun" Multiplicity="1" />
+          <End Role="ZiPinglun" Type="Self.ZiPinglun" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZhuPinglun">
+              <PropertyRef Name="ZhuPingLunID" />
+            </Principal>
+            <Dependent Role="ZiPinglun">
+              <PropertyRef Name="ZhuPingLuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="YouXiEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="DianZan" EntityType="Self.DianZan" />
+          <EntitySet Name="FanKui" EntityType="Self.FanKui" />
+          <EntitySet Name="FengJinRiZhi" EntityType="Self.FengJinRiZhi" />
+          <EntitySet Name="GuanZhuYongHu" EntityType="Self.GuanZhuYongHu" />
+          <EntitySet Name="LiaoTianShi1" EntityType="Self.LiaoTianShi1" />
+          <EntitySet Name="LiaoTianShi2" EntityType="Self.LiaoTianShi2" />
+          <EntitySet Name="LiaoTianShi3" EntityType="Self.LiaoTianShi3" />
+          <EntitySet Name="TieZi" EntityType="Self.TieZi" />
+          <EntitySet Name="TieZiXiaJiaRiZhi" EntityType="Self.TieZiXiaJiaRiZhi" />
+          <EntitySet Name="TieziXiangXi" EntityType="Self.TieziXiangXi" />
+          <EntitySet Name="XinXi" EntityType="Self.XinXi" />
+          <EntitySet Name="YongHu" EntityType="Self.YongHu" />
+          <EntitySet Name="ZhaoPian" EntityType="Self.ZhaoPian" />
+          <EntitySet Name="ZhuPinglun" EntityType="Self.ZhuPinglun" />
+          <EntitySet Name="ZiPinglun" EntityType="Self.ZiPinglun" />
+          <AssociationSet Name="FK_DianZan_TieZi" Association="Self.FK_DianZan_TieZi">
+            <End Role="TieZi" EntitySet="TieZi" />
+            <End Role="DianZan" EntitySet="DianZan" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DianZan_YongHu" Association="Self.FK_DianZan_YongHu">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="DianZan" EntitySet="DianZan" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FanKui_YongHu" Association="Self.FK_FanKui_YongHu">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="FanKui" EntitySet="FanKui" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FengJinRiZhi_YongHu" Association="Self.FK_FengJinRiZhi_YongHu">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="FengJinRiZhi" EntitySet="FengJinRiZhi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GuanZhuYongHu_YongHuER" Association="Self.FK_GuanZhuYongHu_YongHuER">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="GuanZhuYongHu" EntitySet="GuanZhuYongHu" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GuanZhuYongHu_YongHuYI" Association="Self.FK_GuanZhuYongHu_YongHuYI">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="GuanZhuYongHu" EntitySet="GuanZhuYongHu" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LiaoTianShi1_YongHu" Association="Self.FK_LiaoTianShi1_YongHu">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="LiaoTianShi1" EntitySet="LiaoTianShi1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LiaoTianShi2_YongHu" Association="Self.FK_LiaoTianShi2_YongHu">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="LiaoTianShi2" EntitySet="LiaoTianShi2" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LiaoTianShi3_YongHu" Association="Self.FK_LiaoTianShi3_YongHu">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="LiaoTianShi3" EntitySet="LiaoTianShi3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TieZi_YongHu" Association="Self.FK_TieZi_YongHu">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="TieZi" EntitySet="TieZi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TieZiXiaJiaRiZhi_TieZi" Association="Self.FK_TieZiXiaJiaRiZhi_TieZi">
+            <End Role="TieZi" EntitySet="TieZi" />
+            <End Role="TieZiXiaJiaRiZhi" EntitySet="TieZiXiaJiaRiZhi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TieziXiangXi_TieZi" Association="Self.FK_TieziXiangXi_TieZi">
+            <End Role="TieZi" EntitySet="TieZi" />
+            <End Role="TieziXiangXi" EntitySet="TieziXiangXi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZhaoPian_TieZi" Association="Self.FK_ZhaoPian_TieZi">
+            <End Role="TieZi" EntitySet="TieZi" />
+            <End Role="ZhaoPian" EntitySet="ZhaoPian" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZhuPinglun_TieZi" Association="Self.FK_ZhuPinglun_TieZi">
+            <End Role="TieZi" EntitySet="TieZi" />
+            <End Role="ZhuPinglun" EntitySet="ZhuPinglun" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZiPinglun_TieZi" Association="Self.FK_ZiPinglun_TieZi">
+            <End Role="TieZi" EntitySet="TieZi" />
+            <End Role="ZiPinglun" EntitySet="ZiPinglun" />
+          </AssociationSet>
+          <AssociationSet Name="FK_XinXi_FaSongZhe" Association="Self.FK_XinXi_FaSongZhe">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="XinXi" EntitySet="XinXi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_XinXi_JieShouZhe" Association="Self.FK_XinXi_JieShouZhe">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="XinXi" EntitySet="XinXi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZhuPinglun_YongHu" Association="Self.FK_ZhuPinglun_YongHu">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="ZhuPinglun" EntitySet="ZhuPinglun" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZiPinglun_YongHu" Association="Self.FK_ZiPinglun_YongHu">
+            <End Role="YongHu" EntitySet="YongHu" />
+            <End Role="ZiPinglun" EntitySet="ZiPinglun" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZiPinglun_ZhuPinglun" Association="Self.FK_ZiPinglun_ZhuPinglun">
+            <End Role="ZhuPinglun" EntitySet="ZhuPinglun" />
+            <End Role="ZiPinglun" EntitySet="ZiPinglun" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="YouXiModelStoreContainer" CdmEntityContainer="YouXiEntities">
+          <EntitySetMapping Name="DianZan">
+            <EntityTypeMapping TypeName="YouXiModel.DianZan">
+              <MappingFragment StoreEntitySet="DianZan">
+                <ScalarProperty Name="DianZanID" ColumnName="DianZanID" />
+                <ScalarProperty Name="YongHuID" ColumnName="YongHuID" />
+                <ScalarProperty Name="TieZiID" ColumnName="TieZiID" />
+                <ScalarProperty Name="ZhuangTai" ColumnName="ZhuangTai" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FanKui">
+            <EntityTypeMapping TypeName="YouXiModel.FanKui">
+              <MappingFragment StoreEntitySet="FanKui">
+                <ScalarProperty Name="FanKuiID" ColumnName="FanKuiID" />
+                <ScalarProperty Name="YongHuID" ColumnName="YongHuID" />
+                <ScalarProperty Name="FanKuiNeiRong" ColumnName="FanKuiNeiRong" />
+                <ScalarProperty Name="FanKuiShiJian" ColumnName="FanKuiShiJian" />
+                <ScalarProperty Name="ZhuangTai" ColumnName="ZhuangTai" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FengJinRiZhi">
+            <EntityTypeMapping TypeName="YouXiModel.FengJinRiZhi">
+              <MappingFragment StoreEntitySet="FengJinRiZhi">
+                <ScalarProperty Name="RiZhiID" ColumnName="RiZhiID" />
+                <ScalarProperty Name="YongHuID" ColumnName="YongHuID" />
+                <ScalarProperty Name="YuanYin" ColumnName="YuanYin" />
+                <ScalarProperty Name="FengJinShiJian" ColumnName="FengJinShiJian" />
+                <ScalarProperty Name="JieFengShiJian" ColumnName="JieFengShiJian" />
+                <ScalarProperty Name="CaoZuoRen" ColumnName="CaoZuoRen" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GuanZhuYongHu">
+            <EntityTypeMapping TypeName="YouXiModel.GuanZhuYongHu">
+              <MappingFragment StoreEntitySet="GuanZhuYongHu">
+                <ScalarProperty Name="GuanZhuYongHuID" ColumnName="GuanZhuYongHuID" />
+                <ScalarProperty Name="YongHuIDYI" ColumnName="YongHuIDYI" />
+                <ScalarProperty Name="YongHuIDER" ColumnName="YongHuIDER" />
+                <ScalarProperty Name="GuangZhuZhuangTai" ColumnName="GuangZhuZhuangTai" />
+                <ScalarProperty Name="HuiGuanZhuangTai" ColumnName="HuiGuanZhuangTai" />
+                <ScalarProperty Name="LaiHeiZhuangTai" ColumnName="LaiHeiZhuangTai" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LiaoTianShi1">
+            <EntityTypeMapping TypeName="YouXiModel.LiaoTianShi1">
+              <MappingFragment StoreEntitySet="LiaoTianShi1">
+                <ScalarProperty Name="XiaoXiID" ColumnName="XiaoXiID" />
+                <ScalarProperty Name="YongHuID" ColumnName="YongHuID" />
+                <ScalarProperty Name="NeiRong" ColumnName="NeiRong" />
+                <ScalarProperty Name="FaSongShiJian" ColumnName="FaSongShiJian" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LiaoTianShi2">
+            <EntityTypeMapping TypeName="YouXiModel.LiaoTianShi2">
+              <MappingFragment StoreEntitySet="LiaoTianShi2">
+                <ScalarProperty Name="XiaoXiID" ColumnName="XiaoXiID" />
+                <ScalarProperty Name="YongHuID" ColumnName="YongHuID" />
+                <ScalarProperty Name="NeiRong" ColumnName="NeiRong" />
+                <ScalarProperty Name="FaSongShiJian" ColumnName="FaSongShiJian" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LiaoTianShi3">
+            <EntityTypeMapping TypeName="YouXiModel.LiaoTianShi3">
+              <MappingFragment StoreEntitySet="LiaoTianShi3">
+                <ScalarProperty Name="XiaoXiID" ColumnName="XiaoXiID" />
+                <ScalarProperty Name="YongHuID" ColumnName="YongHuID" />
+                <ScalarProperty Name="NeiRong" ColumnName="NeiRong" />
+                <ScalarProperty Name="FaSongShiJian" ColumnName="FaSongShiJian" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TieZi">
+            <EntityTypeMapping TypeName="YouXiModel.TieZi">
+              <MappingFragment StoreEntitySet="TieZi">
+                <ScalarProperty Name="TieZiID" ColumnName="TieZiID" />
+                <ScalarProperty Name="YongHuID" ColumnName="YongHuID" />
+                <ScalarProperty Name="TieZiMing" ColumnName="TieZiMing" />
+                <ScalarProperty Name="FaBuShiJian" ColumnName="FaBuShiJian" />
+                <ScalarProperty Name="ZhuangTai" ColumnName="ZhuangTai" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TieZiXiaJiaRiZhi">
+            <EntityTypeMapping TypeName="YouXiModel.TieZiXiaJiaRiZhi">
+              <MappingFragment StoreEntitySet="TieZiXiaJiaRiZhi">
+                <ScalarProperty Name="RiZhiID" ColumnName="RiZhiID" />
+                <ScalarProperty Name="TieZiID" ColumnName="TieZiID" />
+                <ScalarProperty Name="YuanYin" ColumnName="YuanYin" />
+                <ScalarProperty Name="XiaJiaShiJian" ColumnName="XiaJiaShiJian" />
+                <ScalarProperty Name="HuiFuShiJian" ColumnName="HuiFuShiJian" />
+                <ScalarProperty Name="CaoZuoRen" ColumnName="CaoZuoRen" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TieziXiangXi">
+            <EntityTypeMapping TypeName="YouXiModel.TieziXiangXi">
+              <MappingFragment StoreEntitySet="TieziXiangXi">
+                <ScalarProperty Name="XiangXIID" ColumnName="XiangXIID" />
+                <ScalarProperty Name="TieZiID" ColumnName="TieZiID" />
+                <ScalarProperty Name="NeiRong" ColumnName="NeiRong" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="XinXi">
+            <EntityTypeMapping TypeName="YouXiModel.XinXi">
+              <MappingFragment StoreEntitySet="XinXi">
+                <ScalarProperty Name="XinXiID" ColumnName="XinXiID" />
+                <ScalarProperty Name="FaSongZheID" ColumnName="FaSongZheID" />
+                <ScalarProperty Name="JieShouZheID" ColumnName="JieShouZheID" />
+                <ScalarProperty Name="XinXiNeiRong" ColumnName="XinXiNeiRong" />
+                <ScalarProperty Name="ChuangJianShiJian" ColumnName="ChuangJianShiJian" />
+                <ScalarProperty Name="ZhuangTai" ColumnName="ZhuangTai" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="YongHu">
+            <EntityTypeMapping TypeName="YouXiModel.YongHu">
+              <MappingFragment StoreEntitySet="YongHu">
+                <ScalarProperty Name="YongHuID" ColumnName="YongHuID" />
+                <ScalarProperty Name="YongHuMing" ColumnName="YongHuMing" />
+                <ScalarProperty Name="MiMaHaXi" ColumnName="MiMaHaXi" />
+                <ScalarProperty Name="YanZhi" ColumnName="YanZhi" />
+                <ScalarProperty Name="YouXiang" ColumnName="YouXiang" />
+                <ScalarProperty Name="ZhuangTai" ColumnName="ZhuangTai" />
+                <ScalarProperty Name="ChuangJianShiJian" ColumnName="ChuangJianShiJian" />
+                <ScalarProperty Name="QuanXian" ColumnName="QuanXian" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ZhaoPian">
+            <EntityTypeMapping TypeName="YouXiModel.ZhaoPian">
+              <MappingFragment StoreEntitySet="ZhaoPian">
+                <ScalarProperty Name="ZhaoPianID" ColumnName="ZhaoPianID" />
+                <ScalarProperty Name="TieZiID" ColumnName="TieZiID" />
+                <ScalarProperty Name="Lujing" ColumnName="Lujing" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ZhuPinglun">
+            <EntityTypeMapping TypeName="YouXiModel.ZhuPinglun">
+              <MappingFragment StoreEntitySet="ZhuPinglun">
+                <ScalarProperty Name="ZhuPingLunID" ColumnName="ZhuPingLunID" />
+                <ScalarProperty Name="TieZiID" ColumnName="TieZiID" />
+                <ScalarProperty Name="YongHuID" ColumnName="YongHuID" />
+                <ScalarProperty Name="PingLuNeiRong" ColumnName="PingLuNeiRong" />
+                <ScalarProperty Name="PingLuShiJian" ColumnName="PingLuShiJian" />
+                <ScalarProperty Name="ZhuangTai" ColumnName="ZhuangTai" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ZiPinglun">
+            <EntityTypeMapping TypeName="YouXiModel.ZiPinglun">
+              <MappingFragment StoreEntitySet="ZiPinglun">
+                <ScalarProperty Name="ZiPingLunID" ColumnName="ZiPingLunID" />
+                <ScalarProperty Name="TieZiID" ColumnName="TieZiID" />
+                <ScalarProperty Name="YongHuID" ColumnName="YongHuID" />
+                <ScalarProperty Name="PingLuNeiRong" ColumnName="PingLuNeiRong" />
+                <ScalarProperty Name="PingLuShiJian" ColumnName="PingLuShiJian" />
+                <ScalarProperty Name="ZhuPingLuID" ColumnName="ZhuPingLuID" />
+                <ScalarProperty Name="ZhuangTai" ColumnName="ZhuangTai" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="无" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

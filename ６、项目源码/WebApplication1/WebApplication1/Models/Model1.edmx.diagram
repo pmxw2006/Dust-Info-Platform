@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="0a5e640f014a439496a98218dc8f8753" Name="Diagram1">
+        <EntityTypeShape EntityType="YouXiModel.DianZan" Width="1.5" PointX="5.25" PointY="22" IsExpanded="true" />
+        <EntityTypeShape EntityType="YouXiModel.FanKui" Width="1.5" PointX="3" PointY="8.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="YouXiModel.FengJinRiZhi" Width="1.5" PointX="3" PointY="11.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="YouXiModel.GuanZhuYongHu" Width="1.5" PointX="3" PointY="14.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="YouXiModel.LiaoTianShi1" Width="1.5" PointX="3" PointY="17.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="YouXiModel.LiaoTianShi2" Width="1.5" PointX="3" PointY="20.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="YouXiModel.LiaoTianShi3" Width="1.5" PointX="3" PointY="23.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="YouXiModel.TieZi" Width="1.5" PointX="3" PointY="27.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="YouXiModel.TieZiXiaJiaRiZhi" Width="1.5" PointX="5.25" PointY="25.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="YouXiModel.TieziXiangXi" Width="1.5" PointX="5.25" PointY="28.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="YouXiModel.XinXi" Width="1.5" PointX="3" PointY="33.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="YouXiModel.YongHu" Width="1.5" PointX="0.75" PointY="17.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="YouXiModel.ZhaoPian" Width="1.5" PointX="5.25" PointY="31.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="YouXiModel.ZhuPinglun" Width="1.5" PointX="8.25" PointY="22.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="YouXiModel.ZiPinglun" Width="1.5" PointX="10.5" PointY="22.625" IsExpanded="true" />
+        <AssociationConnector Association="YouXiModel.FK_DianZan_TieZi" ManuallyRouted="false" />
+        <AssociationConnector Association="YouXiModel.FK_DianZan_YongHu" ManuallyRouted="false" />
+        <AssociationConnector Association="YouXiModel.FK_FanKui_YongHu" ManuallyRouted="false" />
+        <AssociationConnector Association="YouXiModel.FK_FengJinRiZhi_YongHu" ManuallyRouted="false" />
+        <AssociationConnector Association="YouXiModel.FK_GuanZhuYongHu_YongHuER" ManuallyRouted="false" />
+        <AssociationConnector Association="YouXiModel.FK_GuanZhuYongHu_YongHuYI" ManuallyRouted="false" />
+        <AssociationConnector Association="YouXiModel.FK_LiaoTianShi1_YongHu" ManuallyRouted="false" />
+        <AssociationConnector Association="YouXiModel.FK_LiaoTianShi2_YongHu" ManuallyRouted="false" />
+        <AssociationConnector Association="YouXiModel.FK_LiaoTianShi3_YongHu" ManuallyRouted="false" />
+        <AssociationConnector Association="YouXiModel.FK_TieZi_YongHu" ManuallyRouted="false" />
+        <AssociationConnector Association="YouXiModel.FK_TieZiXiaJiaRiZhi_TieZi" ManuallyRouted="false" />
+        <AssociationConnector Association="YouXiModel.FK_TieziXiangXi_TieZi" ManuallyRouted="false" />
+        <AssociationConnector Association="YouXiModel.FK_ZhaoPian_TieZi" ManuallyRouted="false" />
+        <AssociationConnector Association="YouXiModel.FK_ZhuPinglun_TieZi" ManuallyRouted="false" />
+        <AssociationConnector Association="YouXiModel.FK_ZiPinglun_TieZi" ManuallyRouted="false" />
+        <AssociationConnector Association="YouXiModel.FK_XinXi_FaSongZhe" ManuallyRouted="false" />
+        <AssociationConnector Association="YouXiModel.FK_XinXi_JieShouZhe" ManuallyRouted="false" />
+        <AssociationConnector Association="YouXiModel.FK_ZhuPinglun_YongHu" ManuallyRouted="false" />
+        <AssociationConnector Association="YouXiModel.FK_ZiPinglun_YongHu" ManuallyRouted="false" />
+        <AssociationConnector Association="YouXiModel.FK_ZiPinglun_ZhuPinglun" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

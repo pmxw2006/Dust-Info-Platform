@@ -1,0 +1,201 @@
+﻿@{
+    ViewBag.Title = "反馈管理";
+    Layout = "~/Views/Shared/_GuanLi.cshtml";
+}
+@section styles {
+    <link href="~/CSS/GongGong/DengLu/DengLuGongGong.css" rel="stylesheet" />
+    <link href="~/CSS/GuanLi/GuanLiFanKui.css" rel="stylesheet" />
+}
+
+<div id="feedback-app" class="feedback-container" v-cloak>
+    <div class="side-menu">
+        <div class="menu-title">反馈管理</div>
+        <div class="menu-item active">待处理反馈</div>
+    </div>
+
+    <div class="main-panel">
+        <div class="panel-header">用户反馈处理</div>
+
+        <!-- AI 工具栏 -->
+        <div class="ai-toolbar">
+            <input type="text" class="ai-input" v-model="aiCommand" placeholder="输入 AI 指令，如：请将广告类反馈标记为已处理..." @@keyup.enter="runAiProcess" />
+            <button class="ai-btn" @@click="runAiProcess" :disabled="aiLoading">AI 整理</button>
+            <span class="ai-status" v-if="aiLoading">AI 分析中...</span>
+            <span class="ai-status" v-else>{{ aiMessage }}</span>
+        </div>
+
+        <!-- 反馈列表 -->
+        <div class="feedback-list" ref="listBox">
+            <div v-for="item in list" :key="item.FanKuiID" class="feedback-item" :class="{ processed: item.ZhuangTai === 1 }">
+                <div class="feedback-header">
+                    <span>用户ID: {{ item.YongHuID }} | {{ formatTime(item.FanKuiShiJian) }}</span>
+                    <span v-if="item.ZhuangTai === 1" style="color:#6c9c12;">已处理</span>
+                    <span v-else style="color:#c15755;">未处理</span>
+                </div>
+                <div class="feedback-content">{{ item.FanKuiNeiRong }}</div>
+                <div class="feedback-actions" v-if="item.ZhuangTai === 0">
+                    <button class="btn-process" @@click="markProcessed(item.FanKuiID)">标记已处理</button>
+                </div>
+            </div>
+            <div v-if="list.length === 0" style="text-align:center; color:#8fbedc; padding:40px;">暂无反馈数据</div>
+        </div>
+
+        <!-- 分页 -->
+        <div class="pagination" v-if="totalPages > 1">
+            <input type="button" value="首页" :disabled="page <= 1" @@click="loadPage(1)" />
+            <input type="button" value="上一页" :disabled="page <= 1" @@click="loadPage(page - 1)" />
+            <span style="color:#acdbf5;">第 {{ page }} / {{ totalPages }} 页</span>
+            <input type="button" value="下一页" :disabled="page >= totalPages" @@click="loadPage(page + 1)" />
+            <input type="button" value="尾页" :disabled="page >= totalPages" @@click="loadPage(totalPages)" />
+        </div>
+    </div>
+
+    <!-- 确认模态框 -->
+    <div class="mo-tai-zhe-zhao" v-if="showConfirmModal" @@click.self="hideConfirm">
+        <div class="mo-tai-ka-pian">
+            <h3>确认操作</h3>
+            <p style="margin:15px 0;">{{ confirmMessage }}</p>
+            <div class="mo-tai-an-niu">
+                <button @@click="hideConfirm">取消</button>
+                <button @@click="doConfirm">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 消息提示模态框 -->
+    <div class="mo-tai-zhe-zhao" v-if="showMessageModal" @@click.self="guanBiXiaoXiMoTai">
+        <div class="mo-tai-ka-pian">
+            <h3>提示</h3>
+            <p style="margin:15px 0; word-break:break-all;">{{ messageText }}</p>
+            <div class="mo-tai-an-niu" style="justify-content:center;">
+                <button @@click="guanBiXiaoXiMoTai">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.14/vue.min.js"></script>
+<script>
+    new Vue({
+        el: '#feedback-app',
+        data: {
+            list: [],
+            page: 1,
+            pageSize: 10,
+            total: 0,
+            totalPages: 1,
+            aiCommand: '',
+            aiLoading: false,
+            aiMessage: '',
+            // 模态框相关
+            showConfirmModal: false,
+            confirmMessage: '',
+            confirmCallback: null,
+            showMessageModal: false,
+            messageText: ''
+        },
+        created() {
+            this.loadPage(1);
+        },
+        methods: {
+            loadPage(page) {
+                var self = this;
+                fetch('/GuanLi/HuoQuFanKuiLieBiao?page=' + page + '&pageSize=' + self.pageSize)
+                    .then(res => res.json())
+                    .then(data => {
+                        self.list = data.list;
+                        self.total = data.total;
+                        self.totalPages = data.totalPages;
+                        self.page = data.page;
+                    })
+                    .catch(err => {
+                        self.xianShiXiaoXi('加载失败，请稍后重试');
+                    });
+            },
+            markProcessed(id) {
+                var self = this;
+                this.showConfirm('确定标记为已处理吗？', function () {
+                    fetch('/GuanLi/ChuLiFanKui', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'fanKuiID=' + id
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                self.loadPage(self.page);
+                            } else {
+                                self.xianShiXiaoXi(data.message || '操作失败');
+                            }
+                        })
+                        .catch(err => {
+                            self.xianShiXiaoXi('请求失败: ' + err.message);
+                        });
+                });
+            },
+            runAiProcess() {
+                if (!this.aiCommand.trim()) {
+                    this.xianShiXiaoXi('请输入 AI 指令');
+                    return;
+                }
+                var self = this;
+                self.aiLoading = true;
+                self.aiMessage = '';
+                fetch('/GuanLi/AiZhengLiFanKui', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'adminMessage=' + encodeURIComponent(self.aiCommand)
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        self.aiLoading = false;
+                        if (data.success) {
+                            self.aiMessage = data.message;
+                            self.loadPage(self.page);
+                        } else {
+                            self.xianShiXiaoXi(data.message || 'AI 处理失败');
+                        }
+                    })
+                    .catch(err => {
+                        self.aiLoading = false;
+                        self.xianShiXiaoXi('请求失败: ' + err.message);
+                    });
+            },
+            formatTime(str) {
+                if (!str) return '';
+                var d = new Date(str);
+                if (isNaN(d.getTime())) return str;
+                var month = (d.getMonth() + 1).toString().padStart(2, '0');
+                var day = d.getDate().toString().padStart(2, '0');
+                var hours = d.getHours().toString().padStart(2, '0');
+                var minutes = d.getMinutes().toString().padStart(2, '0');
+                return month + '/' + day + ' ' + hours + ':' + minutes;
+            },
+
+            // 模态框控制方法
+            showConfirm(msg, callback) {
+                this.confirmMessage = msg;
+                this.confirmCallback = callback;
+                this.showConfirmModal = true;
+            },
+            hideConfirm() {
+                this.showConfirmModal = false;
+                this.confirmCallback = null;
+            },
+            doConfirm() {
+                if (typeof this.confirmCallback === 'function') {
+                    this.confirmCallback();
+                }
+                this.hideConfirm();
+            },
+            xianShiXiaoXi(text) {
+                this.messageText = text;
+                this.showMessageModal = true;
+            },
+            guanBiXiaoXiMoTai() {
+                this.showMessageModal = false;
+                this.messageText = '';
+            }
+        }
+    });
+</script>

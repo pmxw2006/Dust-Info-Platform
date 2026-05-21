@@ -1,0 +1,182 @@
+﻿@model WebApplication1.Models.GeRenZhongXin.GeRenXinXiViewModel
+@{
+    Layout = "~/Views/Shared/_YongHu.cshtml";
+    ViewBag.Title = "个人中心";
+    string chengGongMsg = TempData["SuccessMessage"]?.ToString();
+    string cuoWuMsg = TempData["ErrorMessage"]?.ToString();
+}
+@section styles {
+    <link href="~/CSS/GongGong/DengLu/DengLuGongGong.css" rel="stylesheet" />
+    <link href="~/CSS/GeRenZhongXin/GeRenXinXi.css" rel="stylesheet" />
+}
+
+<div id="gerenxinxi-app" v-cloak>
+    <div class="ge-ren-zhong-xin">
+        <!-- 消息提示 -->
+        <div v-if="chengGongMsg" class="chenggong-tishi" style="display:block;">{{ chengGongMsg }}</div>
+        <div v-if="cuoWuMsg" class="cuowu-tishi" style="display:block;" :class="{ 'fade-out': isFadingOut }">{{ cuoWuMsg }}</div>
+
+        <!-- 头部 -->
+        <div class="tou-bu">
+            <h2>个人中心</h2>
+            <div class="fu-biao-ti">管理您的个人信息和账户设置</div>
+        </div>
+
+        @using (Html.BeginForm("GeRenXinXi", "YongGeRenZhongXin", FormMethod.Post, new { id = "saveForm", @ref = "saveForm" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.YongHuID)
+
+            <!-- 关键修复：隐藏字段始终提交当前的用户名和邮箱（不受 disabled 影响） -->
+            <input type="hidden" name="YongHuMing" v-model="yongHuMing" />
+            <input type="hidden" name="YouXiang" v-model="youXiang" />
+
+            <div class="xin-xi-qu">
+                <div class="xin-xi-biao-ti">
+                    账户信息
+                    <a href="@Url.Action("XiuGaiMiMa", "YongGeRenZhongXin")" class="tiao-zhuan-lian-jie">修改密码</a>
+                </div>
+                <div class="xin-xi-wang-ge">
+                    <!-- 用户ID（只读） -->
+                    <div class="xin-xi-xiang-mu">
+                        <span class="xin-xi-biao-qian">用户ID</span>
+                        <input type="text" class="xin-xi-zhi" :value="yongHuID" readonly />
+                    </div>
+                    <!-- 用户名（可编辑输入框，仅用于交互） -->
+                    <div class="xin-xi-xiang-mu">
+                        <span class="xin-xi-biao-qian">用户名</span>
+                        <input type="text" class="bian-ji-kuang" v-model="yongHuMing" :disabled="!isEditing" />
+                        <span class="tishi" v-if="isEditing && yongHuMingError">{{ yongHuMingError }}</span>
+                    </div>
+                    <!-- 邮箱（可编辑输入框） -->
+                    <div class="xin-xi-xiang-mu">
+                        <span class="xin-xi-biao-qian">邮箱</span>
+                        <input type="email" class="bian-ji-kuang" v-model="youXiang" :disabled="!isEditing" />
+                        <span class="tishi" v-if="isEditing && youXiangError">{{ youXiangError }}</span>
+                    </div>
+                    <!-- 账号状态（只读） -->
+                    <div class="xin-xi-xiang-mu">
+                        <span class="xin-xi-biao-qian">账号状态</span>
+                        <input type="text" class="xin-xi-zhi" :value="zhuangTaiWenBen" readonly />
+                    </div>
+                    <!-- 注册时间（只读） -->
+                    <div class="xin-xi-xiang-mu">
+                        <span class="xin-xi-biao-qian">注册时间</span>
+                        <input type="text" class="xin-xi-zhi" :value="formatDate(chuangJianShiJian)" readonly />
+                    </div>
+                </div>
+            </div>
+
+            <div class="an-niu-zu">
+                <button type="button" class="an-niu-ji-chu" v-if="!isEditing" @@click="enableEdit">编辑信息</button>
+                <button type="button" class="an-niu-cheng-gong" v-if="isEditing" @@click="saveChanges">保存修改</button>
+                <button type="button" class="an-niu-ya-se" v-if="isEditing" @@click="cancelEdit">取消</button>
+                <!-- 返回上一页链接（与按钮同一行，居右，样式与按钮一致） -->
+                <a href="@Url.Action("GeReXiangXi", "YongGeRenZhongXin")" class="fan-hui-lian-jie an-niu-fan-hui">返回上一页</a> 
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+    <script>
+        new Vue({
+            el: '#gerenxinxi-app',
+            data: {
+                yongHuID: @Model.YongHuID,
+                yongHuMing: '@Html.Raw(Model.YongHuMing)',
+                youXiang: '@Html.Raw(Model.YouXiang)',
+                zhuangTai: @Model.ZhuangTai,
+                chuangJianShiJian: '@Model.ChuangJianShiJian.ToString("yyyy-MM-dd HH:mm:ss")',
+                chengGongMsg: @Html.Raw(Json.Encode(chengGongMsg)),
+                cuoWuMsg: @Html.Raw(Json.Encode(cuoWuMsg)),
+                isFadingOut: false,
+                fadeTimer: null,
+                isEditing: false,
+                originalYongHuMing: '@Html.Raw(Model.YongHuMing)',
+                originalYouXiang: '@Html.Raw(Model.YouXiang)',
+                yongHuMingError: '',
+                youXiangError: ''
+            },
+            computed: {
+                zhuangTaiWenBen: function() {
+                    return this.zhuangTai === 1 ? '正常' : '封禁';
+                }
+            },
+            mounted: function() {
+                var self = this;
+                if (self.cuoWuMsg) self.qiDongDanChuJiShi();
+                if (self.chengGongMsg) self.qiDongChengGongXiaoShi();
+            },
+            methods: {
+                formatDate: function(dateStr) {
+                    if (!dateStr) return '';
+                    return dateStr.replace('T', ' ').substring(0, 19);
+                },
+                enableEdit: function() {
+                    this.isEditing = true;
+                    this.originalYongHuMing = this.yongHuMing;
+                    this.originalYouXiang = this.youXiang;
+                    this.yongHuMingError = '';
+                    this.youXiangError = '';
+                },
+                cancelEdit: function() {
+                    this.isEditing = false;
+                    this.yongHuMing = this.originalYongHuMing;
+                    this.youXiang = this.originalYouXiang;
+                    this.yongHuMingError = '';
+                    this.youXiangError = '';
+                },
+                validateForm: function() {
+                    var valid = true;
+                    this.yongHuMingError = '';
+                    this.youXiangError = '';
+                    if (!this.yongHuMing || this.yongHuMing.trim() === '') {
+                        this.yongHuMingError = '用户名不能为空';
+                        valid = false;
+                    } else if (this.yongHuMing.trim().length < 3 || this.yongHuMing.trim().length > 20) {
+                        this.yongHuMingError = '用户名在3-20字之间';
+                        valid = false;
+                    }
+                    if (!this.youXiang || this.youXiang.trim() === '') {
+                        this.youXiangError = '邮箱不能为空';
+                        valid = false;
+                    } else {
+                        var emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+                        if (!emailRegex.test(this.youXiang.trim())) {
+                            this.youXiangError = '邮箱格式不正确';
+                            valid = false;
+                        }
+                    }
+                    return valid;
+                },
+                saveChanges: function() {
+                    if (!this.validateForm()) return;
+                    this.$refs.saveForm.submit();
+                },
+                qiDongDanChuJiShi: function() {
+                    var self = this;
+                    if (this.fadeTimer) clearTimeout(this.fadeTimer);
+                    this.fadeTimer = setTimeout(function() {
+                        self.isFadingOut = true;
+                        setTimeout(function() {
+                            self.cuoWuMsg = null;
+                            self.isFadingOut = false;
+                        }, 500);
+                    }, 5000);
+                },
+                qiDongChengGongXiaoShi: function() {
+                    var self = this;
+                    setTimeout(function() { self.chengGongMsg = null; }, 3000);
+                }
+            },
+            watch: {
+                cuoWuMsg: function(v) { if (v) { this.isFadingOut = false; this.qiDongDanChuJiShi(); } }
+            },
+            beforeDestroy: function() {
+                if (this.fadeTimer) clearTimeout(this.fadeTimer);
+            }
+        });
+    </script>
+}

@@ -1,0 +1,836 @@
+﻿/* ========== Steam 深色风格 - 帖子详情页 ========== */
+
+/* ----- 全局基础 ----- */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #1b2838;
+    font-family: "Motiva Sans", Arial, Helvetica, sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* ----- 详情页内容容器 - 70%宽度水平居中 ----- */
+.xiangqing-neirong {
+    width: 70%;
+    max-width: none;
+    margin: 0 auto;
+    padding: 30px 20px 100px !important;
+    color: #c7d5e0;
+}
+
+/* ----- 标题 ----- */
+.xiangqing-biao-ti {
+    font-size: 36px;
+    font-weight: 500;
+    color: #ffffff;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #2a3a4a;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    letter-spacing: 0.5px;
+}
+
+/* ----- 作者信息行 ----- */
+.xiangqing-xinxi {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 30px;
+    color: #7a8b9b;
+    font-size: 14px;
+}
+
+.xiangqing-zuozhe {
+    color: #acdbf5;
+    font-weight: 500;
+    font-size: 16px;
+    transition: color 0.2s;
+}
+
+    .xiangqing-zuozhe:hover {
+        color: #ffffff;
+    }
+
+/* ----- 正文 ----- */
+.xiangqing-zhengwen {
+    font-size: 16px;
+    line-height: 1.9;
+    color: #c7d5e0;
+    margin: 30px 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+    .xiangqing-zhengwen p {
+        margin-bottom: 20px;
+    }
+
+.empty-placeholder {
+    color: #7a8b9b;
+    text-align: center;
+    padding: 40px;
+    font-style: italic;
+}
+
+/* ========== 图片轮播区域 ========== */
+.xiangqing-tupian {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    margin: 30px 0;
+    min-height: 200px;
+}
+
+/* 单张图片项 - 固定高度 */
+.tupian-xiang {
+    width: 90%;
+    max-width: 800px;
+    height: 400px;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    border: 1px solid #3e5468;
+    display: none;
+    transition: opacity 0.35s ease;
+}
+
+    .tupian-xiang.active {
+        display: block;
+    }
+
+    .tupian-xiang img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+        .tupian-xiang img:hover {
+            transform: scale(1.02);
+        }
+
+/* 轮播箭头按钮的基础定位与尺寸，颜色由JS内联样式控制 */
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    line-height: 1;
+    padding: 0;
+    font-family: inherit;
+    outline: none;
+}
+
+.carousel-arrow-left {
+    left: 2%;
+}
+
+.carousel-arrow-right {
+    right: 2%;
+}
+
+/* ----- 分割线 ----- */
+.xiangqing-fengexian {
+    height: 1px;
+    background: #2a3a4a;
+    margin: 30px 0;
+}
+
+/* ========== 互动栏 - Steam风格按钮 ========== */
+.xiangqing-hudong {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 10px 0 20px;
+}
+
+.hudong-xiang {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    border: none;
+}
+
+    .hudong-xiang input[type="button"] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 120px;
+        height: 42px;
+        padding: 0 24px;
+        background: #1e2c3c;
+        border: 1px solid #2c4050;
+        border-radius: 4px;
+        color: #b8c7d4;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+        font-family: inherit;
+        line-height: normal;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+        .hudong-xiang input[type="button"]:hover {
+            background: #26445e;
+            border-color: #4f8bc9;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        .hudong-xiang input[type="button"]:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+/* ========== 评论区容器 - 与内容宽度一致 ========== */
+.comment-container {
+    width: 100%;
+    max-width: none;
+    margin: 30px auto 0;
+    padding: 0;
+    background: transparent;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    height: 500px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+    .comment-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .comment-container::-webkit-scrollbar-thumb {
+        background: #3e5a6c;
+        border-radius: 3px;
+    }
+
+    .comment-container::-webkit-scrollbar-track {
+        background: #16212b;
+    }
+
+    .comment-container > div {
+        background: #1e2a3a;
+        border-radius: 6px;
+        padding: 18px 20px;
+        margin-bottom: 20px;
+        border: 1px solid #2a3a4a;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+        .comment-container > div:hover {
+            border-color: #4f8bc9;
+            background: #213043;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+        }
+
+.child-comment-wrapper {
+    margin-left: 28px;
+    margin-top: 14px;
+    padding-left: 16px;
+    border-left: 3px solid #3e5a6c;
+    background: transparent;
+    display: none;
+}
+
+    .child-comment-wrapper.show {
+        display: block !important;
+    }
+
+    .child-comment-wrapper > div {
+        background: #16212b;
+        border-radius: 6px;
+        padding: 14px 16px;
+        margin-bottom: 14px;
+        border: 1px solid #2a3a4a;
+        transition: all 0.15s;
+    }
+
+        .child-comment-wrapper > div:hover {
+            background: #1c2a38;
+            border-color: #4f8bc9;
+        }
+
+        .comment-container > div > div:first-child,
+        .child-comment-wrapper > div > div:first-child {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #e2eef9;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+            .comment-container > div > div:first-child::before,
+            .child-comment-wrapper > div > div:first-child::before {
+                content: "👤";
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 30px;
+                height: 30px;
+                background: #2c4050;
+                border-radius: 50%;
+                font-size: 14px;
+                margin-right: 6px;
+                color: #acdbf5;
+            }
+
+        .comment-container > div > div:nth-child(2),
+        .child-comment-wrapper > div > div:nth-child(2) {
+            font-size: 0.95rem;
+            line-height: 1.55;
+            color: #d1dfe9;
+            margin-bottom: 12px;
+            word-break: break-word;
+            padding-left: 42px;
+        }
+
+        .comment-container > div > div:nth-child(3),
+        .child-comment-wrapper > div > div:nth-child(3) {
+            font-size: 0.75rem;
+            color: #7c95aa;
+            margin-bottom: 12px;
+            padding-left: 42px;
+            display: inline-block;
+        }
+
+        .comment-container > div > div:nth-child(4),
+        .child-comment-wrapper > div > div:nth-child(4) {
+            text-align: right;
+            padding-left: 42px;
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+.comment-container input[type="button"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #1e2c3c;
+    border: 1px solid #2c4050;
+    border-radius: 4px;
+    color: #b8c7d4;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+    .comment-container input[type="button"]:hover:not(:disabled) {
+        background: #26445e;
+        border-color: #4f8bc9;
+        color: #ffffff;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+        transform: translateY(-1px);
+    }
+
+    .comment-container input[type="button"]:disabled {
+        background: #121a24;
+        border-color: #1e2c38;
+        color: #556677;
+        cursor: not-allowed;
+        opacity: 1;
+        transform: none;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
+    }
+
+.comment-container::before {
+    content: "💬 评论区";
+    display: block;
+    font-weight: 600;
+    font-size: 1.4rem;
+    margin-bottom: 22px;
+    color: #e2eef9;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #2a3a4a;
+}
+
+/* ========== 评论输入框样式 ========== */
+#app-hudong > div[class*="xiangqing-fengexian"] + div,
+#app-hudong > div:last-of-type[style*="block"] {
+    margin-top: 20px;
+}
+
+#app-hudong input[type="text"] {
+    width: 100%;
+    padding: 12px 18px;
+    background: #16212b;
+    border: 1px solid #2c4050;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: #eef2f7;
+    outline: none;
+    transition: all 0.2s;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+    #app-hudong input[type="text"]:focus {
+        border-color: #4f8bc9;
+        background: #1e2a3a;
+        box-shadow: 0 0 0 3px rgba(79,139,201,0.2);
+    }
+
+    #app-hudong input[type="text"]::placeholder {
+        color: #5a748a;
+    }
+
+#app-hudong input[value="发送"] {
+    margin-top: 12px;
+    background: #1e2c3c;
+    border: 1px solid #2c4050;
+    border-radius: 4px;
+    color: #b8c7d4;
+    padding: 8px 22px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-block;
+    width: auto;
+    font-family: inherit;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+    #app-hudong input[value="发送"]:hover:not(:disabled) {
+        background: #26445e;
+        border-color: #4f8bc9;
+        color: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    #app-hudong input[value="发送"]:active {
+        transform: translateY(1px);
+    }
+
+    #app-hudong input[value="发送"]:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        background: #121a24;
+        color: #556677;
+    }
+
+#app-hudong > div:has(> input[type="text"]) {
+    margin: 20px 0 10px;
+    background: transparent;
+    padding: 10px 0;
+}
+
+/* ========== 固定底部输入框 ========== */
+.bottom-input-fixed {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    right: auto;
+    background: rgba(22,33,43,0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid #2a3a4a;
+    border-left: 1px solid #2a3a4a;
+    border-right: 1px solid #2a3a4a;
+    border-radius: 8px 8px 0 0;
+    padding: 12px 20px 20px;
+    z-index: 9999;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+}
+
+    .bottom-input-fixed input[type="text"] {
+        flex: 1;
+        background: #1e2a3a;
+        border: 1px solid #3e5a6c;
+        border-radius: 4px;
+        padding: 12px 18px;
+        font-size: 1rem;
+        color: #eef2f7;
+        outline: none;
+        transition: all 0.2s;
+        font-family: inherit;
+    }
+
+        .bottom-input-fixed input[type="text"]:focus {
+            border-color: #4f8bc9;
+            background: #213043;
+            box-shadow: 0 0 0 3px rgba(79,139,201,0.2);
+        }
+
+        .bottom-input-fixed input[type="text"]::placeholder {
+            color: #7c95aa;
+        }
+
+    .bottom-input-fixed input[type="button"] {
+        background: #1e2c3c;
+        border: 1px solid #2c4050;
+        border-radius: 4px;
+        color: #b8c7d4;
+        padding: 10px 28px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+        font-family: inherit;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+        .bottom-input-fixed input[type="button"]:hover:not(:disabled) {
+            background: #26445e;
+            border-color: #4f8bc9;
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .bottom-input-fixed input[type="button"]:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            background: #121a24;
+            color: #556677;
+        }
+
+/* ========== 固定返回按钮 ========== */
+.fanhui-guding {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #1e2c3c;
+    border: 1px solid #2c4050;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #c7d5e0;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.25s;
+    z-index: 999;
+    text-decoration: none;
+}
+
+    .fanhui-guding:hover {
+        background: #26445e;
+        border-color: #4f8bc9;
+        color: #ffffff;
+        box-shadow: 0 6px 20px rgba(50,130,200,0.5);
+        transform: scale(1.08);
+    }
+
+/* ========== 加载遮罩与模态框 ========== */
+#global-loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.85);
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: #fff;
+    font-size: 18px;
+    backdrop-filter: blur(4px);
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #2c4050;
+    border-top-color: #4f8bc9;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+@@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+body.no-scroll {
+    overflow: hidden;
+}
+
+.mo-tai-zhe-zhao {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mo-tai-ka-pian {
+    background: #1e2a3a;
+    border-radius: 8px;
+    border: 1px solid #3e5a6c;
+    box-shadow: 0 20px 35px rgba(0,0,0,0.5);
+    width: 300px;
+    max-width: 90%;
+    padding: 24px 20px 20px;
+    text-align: center;
+    color: #e2eef9;
+    animation: fadeInUp 0.2s ease;
+}
+
+@@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.mo-tai-ka-pian h3 {
+    font-size: 1.6rem;
+    margin: 0 0 16px 0;
+    font-weight: 500;
+    color: #ffffff;
+}
+
+.mo-tai-ka-pian p {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 24px;
+    word-break: break-word;
+}
+
+.mo-tai-an-niu {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+    .mo-tai-an-niu button {
+        background: #1e2c3c;
+        border: 1px solid #2c4050;
+        border-radius: 4px;
+        color: #b8c7d4;
+        padding: 8px 28px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: inherit;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+        .mo-tai-an-niu button:hover {
+            background: #26445e;
+            border-color: #4f8bc9;
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .mo-tai-an-niu button:active {
+            transform: translateY(1px);
+        }
+
+/* ========== 响应式适配 ========== */
+@@media (max-width: 900px) {
+    .xiangqing-neirong {
+        width: 85%;
+        padding: 20px 15px 100px !important;
+    }
+
+    .bottom-input-fixed {
+        width: 85%;
+    }
+
+    .xiangqing-biao-ti {
+        font-size: 30px;
+    }
+
+    .carousel-arrow {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+    }
+
+    .carousel-arrow-left {
+        left: 0;
+    }
+
+    .carousel-arrow-right {
+        right: 0;
+    }
+
+    .tupian-xiang {
+        height: 320px;
+    }
+}
+
+@@media (max-width: 640px) {
+    .xiangqing-neirong {
+        width: 94%;
+        padding: 16px 10px 110px !important;
+    }
+
+    .bottom-input-fixed {
+        width: 94%;
+        padding: 10px 12px 16px;
+        border-radius: 8px 8px 0 0;
+    }
+
+        .bottom-input-fixed input[type="text"] {
+            padding: 10px 14px;
+            font-size: 0.9rem;
+        }
+
+        .bottom-input-fixed input[type="button"] {
+            padding: 8px 18px;
+            font-size: 0.85rem;
+        }
+
+    .xiangqing-biao-ti {
+        font-size: 26px;
+    }
+
+    .xiangqing-hudong {
+        gap: 16px;
+    }
+
+    .hudong-xiang input[type="button"] {
+        min-width: 100px;
+        height: 38px;
+        padding: 0 18px;
+        font-size: 14px;
+    }
+
+    .fanhui-guding {
+        bottom: 16px;
+        right: 16px;
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
+    }
+
+    .comment-container {
+        height: 400px;
+    }
+
+        .comment-container > div > div:nth-child(2),
+        .child-comment-wrapper > div > div:nth-child(2),
+        .comment-container > div > div:nth-child(3),
+        .child-comment-wrapper > div > div:nth-child(3),
+        .comment-container > div > div:nth-child(4),
+        .child-comment-wrapper > div > div:nth-child(4) {
+            padding-left: 32px;
+        }
+
+    .child-comment-wrapper {
+        margin-left: 16px;
+        padding-left: 10px;
+    }
+
+    .carousel-arrow {
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+    }
+
+    .tupian-xiang {
+        width: 96%;
+        height: 260px;
+    }
+}
+
+@@media (max-width: 400px) {
+    .xiangqing-neirong {
+        width: 98%;
+        padding: 12px 6px 110px !important;
+    }
+
+    .bottom-input-fixed {
+        width: 98%;
+        padding: 8px 10px 14px;
+    }
+
+    .xiangqing-biao-ti {
+        font-size: 22px;
+    }
+
+    .hudong-xiang input[type="button"] {
+        min-width: 80px;
+        height: 34px;
+        padding: 0 14px;
+        font-size: 13px;
+    }
+
+    .carousel-arrow {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+
+    .tupian-xiang {
+        height: 220px;
+    }
+}

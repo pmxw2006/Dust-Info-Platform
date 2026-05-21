@@ -1,0 +1,225 @@
+﻿@{
+    ViewBag.Title = "编辑帖子";
+    Layout = "~/Views/Shared/_YongHu.cshtml";
+    string chengGongMsg = TempData["SuccessMessage"]?.ToString();
+    string houDuanError = TempData["ErrorMessage"]?.ToString();
+}
+@section styles {
+    <link href="~/CSS/YngHu/TianJia.css" rel="stylesheet" />
+}
+
+<!-- 固定返回按钮（仿 TianJia） -->
+<a href="@Url.Action("GeReXiangXi", "YongGeRenZhongXin")" class="fanhui-guding" title="返回">←</a>
+
+<div id="tiezi-edit-app" v-cloak>
+    <!-- 成功提示 -->
+    <div v-if="chengGongMsg" class="chenggong-tishi">{{ chengGongMsg }}</div>
+    <!-- 后端错误提示 -->
+    <div v-if="houDuanErrorMsg" class="cuowu-tishi" :class="{ 'fade-out': isFadingOut }">{{ houDuanErrorMsg }}</div>
+
+    <form @@submit.prevent="tiJiaoBiaoDan" enctype="multipart/form-data">
+        <!-- 帖子ID隐藏域 -->
+        <input type="hidden" v-model="tieZiID" />
+        <input type="hidden" v-model="xiangXIID" />
+
+        <!-- 帖子标题 -->
+        <div class="biao-dan-hang">
+            <label>帖子标题</label>
+            <input type="text" class="shu-ru-kuang" placeholder="请输入帖子标题" v-model="tieZiMing" />
+            <span class="tishi">
+                <span v-if="titleError">{{ titleError }}</span>
+                <span v-else> </span>
+            </span>
+        </div>
+
+        <!-- 帖子图片 -->
+        <div class="biao-dan-hang">
+            <label>帖子图片（可多选，最多9张）</label>
+            <div class="shangchuan-qu">
+                <!-- 已有图片 -->
+                <div v-for="(img, index) in existingImages" :key="'old-'+img.id" class="yulan-kuang">
+                    <img :src="img.url" alt="预览" />
+                    <span class="shanchu-an" @@click.stop="shanChuYiYouTuPian(index)">×</span>
+                </div>
+                <!-- 新上传的图片 -->
+                <div v-for="(img, index) in newImages" :key="'new-'+index" class="yulan-kuang">
+                    <img :src="img.url" alt="预览" />
+                    <span class="shanchu-an" @@click.stop="shanChuXinTuPian(index)">×</span>
+                </div>
+                <!-- 添加按钮 -->
+                <div v-if="totalImages < 9" class="jiahao-kuang" @@click="kaiQiWenJianXuanZe">+</div>
+            </div>
+            <input type="file" id="hidden-file-input" accept="image/*" @@change="chuLiWenJianXuanZe" multiple style="display:none;" ref="fileInput" />
+            <span class="tishi">
+                <span v-if="imageError">{{ imageError }}</span>
+                <span v-else> </span>
+            </span>
+        </div>
+
+        <!-- 帖子内容 -->
+        <div class="biao-dan-hang">
+            <label>帖子内容</label>
+            <textarea class="da-wen-ben" placeholder="请输入帖子内容..." v-model="neiRong" rows="8"></textarea>
+            <span class="tishi">
+                <span v-if="contentError">{{ contentError }}</span>
+                <span v-else> </span>
+            </span>
+        </div>
+
+        <input type="submit" value="保存修改" class="tijiao-an-niu" />
+    </form>
+</div>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.14/vue.min.js"></script>
+<script>
+    // 将返回按钮移出 .main 容器，保持 fixed 定位
+    (function moveBtn() {
+        var btn = document.querySelector('.fanhui-guding');
+        if (btn) document.body.appendChild(btn);
+    })();
+
+    new Vue({
+        el: '#tiezi-edit-app',
+        data: {
+            chengGongMsg: @Html.Raw(Json.Encode(chengGongMsg)),
+            houDuanErrorMsg: @Html.Raw(string.IsNullOrEmpty(houDuanError) ? "null" : $"'{houDuanError}'"),
+            isFadingOut: false,
+            fadeTimer: null,
+            successTimer: null,
+            tieZiID: @ViewData["TieZiID"],
+            xiangXIID: @ViewData["XiangXIID"],
+            tieZiMing: @Html.Raw(Json.Encode(ViewData["TieZiMing"])),
+            neiRong: @Html.Raw(Json.Encode(ViewData["NeiRong"])),
+            existingImages: @Html.Raw(ViewBag.ExistingImagesJson ?? "[]"),
+            newImages: [],
+            titleError: '',
+            contentError: '',
+            imageError: ''
+        },
+        computed: {
+            totalImages: function() {
+                return this.existingImages.length + this.newImages.length;
+            }
+        },
+        mounted: function() {
+            if (this.chengGongMsg) this.qiDongChengGongTiaoZhuan();
+            if (this.houDuanErrorMsg) this.qiDongDanChuJiShi();
+        },
+        methods: {
+            // 打开文件选择框
+            kaiQiWenJianXuanZe: function() {
+                this.$refs.fileInput.click();
+            },
+            // 处理新图片选择
+            chuLiWenJianXuanZe: function(e) {
+                var files = e.target.files;
+                if (!files.length) return;
+                for (var i = 0; i < files.length; i++) {
+                    if (this.totalImages >= 9) break;
+                    var file = files[i];
+                    var url = URL.createObjectURL(file);
+                    this.newImages.push({ file: file, url: url });
+                }
+                e.target.value = '';
+                this.imageError = '';
+            },
+            // 删除已有图片（前端移除，待提交时告知后端）
+            shanChuYiYouTuPian: function(index) {
+                this.existingImages.splice(index, 1);
+            },
+            // 删除新上传的图片
+            shanChuXinTuPian: function(index) {
+                URL.revokeObjectURL(this.newImages[index].url);
+                this.newImages.splice(index, 1);
+            },
+            // 前端验证
+            yanZhengBiaoDan: function() {
+                var valid = true;
+                this.titleError = '';
+                this.contentError = '';
+                if (!this.tieZiMing.trim()) {
+                    this.titleError = '标题不能为空';
+                    valid = false;
+                }
+                if (!this.neiRong.trim()) {
+                    this.contentError = '内容不能为空';
+                    valid = false;
+                }
+                return valid;
+            },
+            // 提交表单
+            tiJiaoBiaoDan: function() {
+                if (!this.yanZhengBiaoDan()) return;
+
+                var formData = new FormData();
+                formData.append('TieZiID', this.tieZiID);
+                formData.append('XiangXIID', this.xiangXIID);
+                formData.append('TieZiMing', this.tieZiMing.trim());
+                formData.append('NeiRong', this.neiRong.trim());
+                // 发送最终保留的已有图片ID（逗号分隔）
+                var keepIds = this.existingImages.map(function(img) { return img.id; }).join(',');
+                formData.append('keepImageIds', keepIds);
+                // 添加新上传的文件
+                this.newImages.forEach(function(img) {
+                    formData.append('files', img.file);
+                });
+
+                var self = this;
+                fetch('/YongGeRenZhongXin/TieZiEdit', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    if (data.success) {
+                        self.chengGongMsg = '帖子修改成功！即将跳转';
+                        self.qiDongChengGongTiaoZhuan();
+                    } else {
+                        self.houDuanErrorMsg = data.message || '修改失败';
+                        self.qiDongDanChuJiShi();
+                    }
+                })
+                .catch(function() {
+                    self.houDuanErrorMsg = '网络错误，请稍后重试';
+                    self.qiDongDanChuJiShi();
+                });
+            },
+            // 3秒后渐隐错误提示
+            qiDongDanChuJiShi: function() {
+                var self = this;
+                if (this.fadeTimer) clearTimeout(this.fadeTimer);
+                this.fadeTimer = setTimeout(function() {
+                    self.isFadingOut = true;
+                    setTimeout(function() {
+                        self.houDuanErrorMsg = null;
+                        self.isFadingOut = false;
+                    }, 500);
+                }, 3000);
+            },
+            // 2秒后跳转回个人详情页
+            qiDongChengGongTiaoZhuan: function() {
+                var self = this;
+                if (this.successTimer) clearTimeout(this.successTimer);
+                this.successTimer = setTimeout(function() {
+                    self.chengGongMsg = null;
+                    window.location.href = '@Url.Action("GeReXiangXi", "YongGeRenZhongXin")';
+                }, 2000);
+            }
+        },
+        watch: {
+            tieZiMing: function() { this.titleError = ''; },
+            neiRong: function() { this.contentError = ''; },
+            houDuanErrorMsg: function(newVal) {
+                if (newVal) {
+                    this.isFadingOut = false;
+                    this.qiDongDanChuJiShi();
+                }
+            }
+        },
+        beforeDestroy: function() {
+            if (this.fadeTimer) clearTimeout(this.fadeTimer);
+            if (this.successTimer) clearTimeout(this.successTimer);
+            this.newImages.forEach(function(img) { URL.revokeObjectURL(img.url); });
+        }
+    });
+</script>

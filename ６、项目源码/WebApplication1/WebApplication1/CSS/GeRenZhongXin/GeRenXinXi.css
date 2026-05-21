@@ -1,0 +1,250 @@
+﻿/* ============================================================
+   个人中心页面样式（深色毛玻璃风格）
+   ============================================================ */
+
+/* 卡片容器 */
+.ge-ren-zhong-xin {
+    max-width: 650px;
+    margin: 30px auto;
+    padding: 25px 30px;
+    background: rgba(27, 40, 56, 0.85);
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border: 1px solid rgba(102, 192, 244, 0.3);
+    color: #e9e9e9;
+}
+
+/* 头部标题 */
+.tou-bu h2 {
+    color: #ffffff;
+    margin-bottom: 5px;
+    font-size: 26px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+}
+
+.fu-biao-ti {
+    color: #8fbedc;
+    margin-bottom: 25px;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+}
+
+/* 信息区块 */
+.xin-xi-qu {
+    margin-bottom: 25px;
+}
+
+.xin-xi-biao-ti {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 400;
+    color: #acdbf5;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(102, 192, 244, 0.3);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.tiao-zhuan-lian-jie {
+    color: #66c0f4;
+    font-size: 14px;
+    text-decoration: none;
+    text-transform: none;
+    font-weight: 400;
+    transition: color 0.2s;
+}
+
+    .tiao-zhuan-lian-jie:hover {
+        color: #a4d7f8;
+        text-decoration: none;
+    }
+
+.xin-xi-wang-ge {
+    display: grid;
+    gap: 18px;
+}
+
+.xin-xi-xiang-mu {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.xin-xi-biao-qian {
+    width: 100px;
+    color: #acdbf5;
+    font-weight: 400;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-top: 10px;
+}
+
+.xin-xi-zhi {
+    flex: 1;
+    padding: 10px 15px;
+    background: rgba(34, 45, 58, 0.8);
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(102, 192, 244, 0.3);
+    border-radius: 3px;
+    color: #e9e9e9;
+    font-size: 15px;
+}
+
+    .xin-xi-zhi[readonly] {
+        background: rgba(20, 30, 40, 0.6);
+        cursor: default;
+    }
+
+.bian-ji-kuang {
+    flex: 1;
+    padding: 10px 15px;
+    background: rgba(34, 45, 58, 0.8);
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(102, 192, 244, 0.3);
+    border-radius: 3px;
+    color: #e9e9e9;
+    font-size: 15px;
+    transition: all 0.2s;
+}
+
+    .bian-ji-kuang:focus {
+        border-color: #66c0f4;
+        background: rgba(35, 50, 64, 0.9);
+        box-shadow: 0 0 0 2px rgba(102, 192, 244, 0.3);
+        outline: none;
+    }
+
+    .bian-ji-kuang:disabled {
+        background: rgba(20, 30, 40, 0.6);
+        opacity: 0.8;
+        cursor: default;
+    }
+
+.tishi {
+    width: 100%;
+    margin-left: 100px;
+    margin-top: 5px;
+    color: #c15755;
+    font-size: 12px;
+    min-height: 18px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+/* ================= 按钮区域 ================= */
+.an-niu-zu {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    align-items: center;
+}
+
+/* 高优先级选择器确保覆盖其他样式 */
+.ge-ren-zhong-xin .an-niu-zu .an-niu-ji-chu,
+.ge-ren-zhong-xin .an-niu-zu .an-niu-cheng-gong,
+.ge-ren-zhong-xin .an-niu-zu .an-niu-ya-se {
+    padding: 10px 25px;
+    background: linear-gradient(135deg, #2c4c6e 0%, #1a3a4f 100%);
+    backdrop-filter: blur(2px);
+    color: #eef5ff;
+    border: 1px solid rgba(102, 192, 244, 0.2);
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.25s ease;
+    position: relative;
+}
+
+    /* 悬停效果 */
+    .ge-ren-zhong-xin .an-niu-zu .an-niu-ji-chu:hover,
+    .ge-ren-zhong-xin .an-niu-zu .an-niu-cheng-gong:hover,
+    .ge-ren-zhong-xin .an-niu-zu .an-niu-ya-se:hover {
+        background: linear-gradient(135deg, #3e6d96 0%, #23526c 100%);
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(50, 130, 200, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+    }
+
+    /* 按下效果 */
+    .ge-ren-zhong-xin .an-niu-zu .an-niu-ji-chu:active,
+    .ge-ren-zhong-xin .an-niu-zu .an-niu-cheng-gong:active,
+    .ge-ren-zhong-xin .an-niu-zu .an-niu-ya-se:active {
+        transform: translateY(1px);
+        background: linear-gradient(135deg, #1f405c 0%, #143040 100%);
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+/* 保存按钮加一点蓝色光晕边框以示区分 */
+.ge-ren-zhong-xin .an-niu-zu .an-niu-cheng-gong {
+    border-color: rgba(102, 192, 244, 0.5);
+}
+
+/* ================= 返回链接样式（与按钮一致，靠右） ================= */
+.an-niu-fan-hui {
+    margin-left: auto; /* 自动推到右侧 */
+    padding: 10px 25px;
+    background: linear-gradient(135deg, #2c4c6e 0%, #1a3a4f 100%);
+    color: #eef5ff;
+    border: 1px solid rgba(102, 192, 244, 0.2);
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.25s;
+    display: inline-flex;
+    align-items: center;
+}
+
+    .an-niu-fan-hui:hover {
+        background: linear-gradient(135deg, #3e6d96 0%, #23526c 100%);
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(50, 130, 200, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+    }
+
+    .an-niu-fan-hui:active {
+        transform: translateY(1px);
+        background: linear-gradient(135deg, #1f405c 0%, #143040 100%);
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+/* ================= 消息提示 ================= */
+.chenggong-tishi,
+.cuowu-tishi {
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.chenggong-tishi {
+    background: rgba(108, 156, 18, 0.25);
+    color: #8fbc8f;
+    border-left: 4px solid #6c9c12;
+    backdrop-filter: blur(4px);
+}
+
+.cuowu-tishi {
+    background: rgba(193, 87, 85, 0.25);
+    color: #c15755;
+    border-left: 4px solid #c15755;
+    backdrop-filter: blur(4px);
+    transition: opacity 0.5s;
+}
+
+    .cuowu-tishi.fade-out {
+        opacity: 0;
+    }

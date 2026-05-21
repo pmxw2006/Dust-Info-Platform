@@ -1,0 +1,238 @@
+﻿/* 卡片容器 */
+.xiu-gai-mi-ma {
+    max-width: 550px;
+    margin: 30px auto;
+    padding: 25px 30px;
+    background: rgba(27, 40, 56, 0.85);
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 4px 8px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(102, 192, 244, 0.3);
+    color: #e9e9e9;
+}
+
+.tou-bu h2 {
+    color: #ffffff;
+    margin-bottom: 5px;
+    font-size: 26px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.fu-biao-ti {
+    color: #8fbedc;
+    margin-bottom: 25px;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.mi-ma-xin-xi-qu {
+    margin-top: 10px;
+}
+
+.mi-ma-xiang-mu {
+    margin-bottom: 22px;
+}
+
+.mi-ma-biao-qian {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 400;
+    color: #acdbf5;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.mi-ma-shu-ru-kuang {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: rgba(34, 45, 58, 0.8);
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(102, 192, 244, 0.3);
+    border-radius: 3px;
+    font-size: 15px;
+    color: #e9e9e9;
+    transition: all 0.2s ease;
+}
+
+    .mi-ma-shu-ru-kuang::placeholder {
+        color: #6b8a9e;
+        font-size: 14px;
+    }
+
+    .mi-ma-shu-ru-kuang:focus {
+        border-color: #66c0f4;
+        background-color: rgba(35, 50, 64, 0.9);
+        box-shadow: 0 0 0 2px rgba(102, 192, 244, 0.3);
+        outline: none;
+    }
+
+    .mi-ma-shu-ru-kuang.error {
+        border-color: #c15755;
+        background-color: rgba(42, 30, 34, 0.8);
+    }
+
+        .mi-ma-shu-ru-kuang.error:focus {
+            border-color: #c15755;
+            box-shadow: 0 0 0 2px rgba(193, 87, 85, 0.3);
+        }
+
+.tishi {
+    color: #c15755;
+    font-size: 12px;
+    display: block;
+    margin-top: 5px;
+    min-height: 18px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.MiMaQiangDuTiao {
+    height: 5px;
+    background: #3a4a5a;
+    border-radius: 3px;
+    margin: 8px 0 5px;
+}
+
+.mi-ma-qiang-du-ruo {
+    background: #c15755;
+    width: 25%;
+}
+
+.mi-ma-qiang-du-zhong {
+    background: #f0ad4e;
+    width: 50%;
+}
+
+.mi-ma-qiang-du-qiang {
+    background: #5cb85c;
+    width: 75%;
+}
+
+.mi-ma-qiang-du-fei-qiang {
+    background: #2e6da4;
+    width: 100%;
+}
+
+.mi-ma-ti-shi {
+    font-size: 12px;
+    color: #acdbf5;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.mi-ma-yao-qiu {
+    background: rgba(34, 45, 58, 0.6);
+    backdrop-filter: blur(2px);
+    padding: 15px 18px;
+    border-radius: 4px;
+    margin: 20px 0 25px;
+    border: 1px solid rgba(102, 192, 244, 0.2);
+}
+
+.yao-qiu-biao-ti {
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #acdbf5;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.mi-ma-yao-qiu ul {
+    margin: 0;
+    padding-left: 20px;
+    color: #8fbedc;
+    font-size: 13px;
+}
+
+    .mi-ma-yao-qiu ul li {
+        margin-bottom: 4px;
+    }
+
+.an-niu-zu {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+    /* ===== 极高优先级选择器：彻底覆盖任何绿色按钮样式 ===== */
+    .xiu-gai-mi-ma .an-niu-zu .an-niu-cheng-gong,
+    .xiu-gai-mi-ma .an-niu-cheng-gong,
+    .an-niu-zu .an-niu-cheng-gong {
+        padding: 10px 30px;
+        background: linear-gradient(135deg, #2c4c6e 0%, #1a3a4f 100%);
+        backdrop-filter: blur(2px);
+        color: #eef5ff;
+        border: 1px solid rgba(102, 192, 244, 0.2);
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        transition: all 0.25s ease;
+        position: relative;
+    }
+
+        .xiu-gai-mi-ma .an-niu-zu .an-niu-cheng-gong:hover,
+        .xiu-gai-mi-ma .an-niu-cheng-gong:hover,
+        .an-niu-zu .an-niu-cheng-gong:hover {
+            background: linear-gradient(135deg, #3e6d96 0%, #23526c 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(50, 130, 200, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .xiu-gai-mi-ma .an-niu-zu .an-niu-cheng-gong:active,
+        .xiu-gai-mi-ma .an-niu-cheng-gong:active,
+        .an-niu-zu .an-niu-cheng-gong:active {
+            transform: translateY(1px);
+            background: linear-gradient(135deg, #1f405c 0%, #143040 100%);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+.fan-hui-lian-jie {
+    color: #66c0f4;
+    text-decoration: none;
+    font-size: 14px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    transition: color 0.2s;
+}
+
+    .fan-hui-lian-jie:hover {
+        color: #a4d7f8;
+        text-decoration: none;
+    }
+
+.chenggong-tishi {
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    background: rgba(108, 156, 18, 0.25);
+    color: #8fbc8f;
+    border-left: 4px solid #6c9c12;
+    backdrop-filter: blur(4px);
+    border-radius: 4px;
+}
+
+.cuowu-tishi {
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    color: #c15755;
+    background: rgba(193, 87, 85, 0.25);
+    border-left: 4px solid #c15755;
+    border-radius: 3px;
+    backdrop-filter: blur(4px);
+    transition: opacity 0.5s;
+}
+
+    .cuowu-tishi.fade-out {
+        opacity: 0;
+    }
+
+.skip-fadein {
+    animation: none !important;
+}

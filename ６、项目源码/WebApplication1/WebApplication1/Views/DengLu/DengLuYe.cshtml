@@ -1,0 +1,203 @@
+﻿@model WebApplication1.Models.DengLu.DengLuViewModel
+@{
+    Layout = null;
+    // 从 TempData 中获取后端返回的错误消息
+    string houDuanError = TempData["ErrorMessage"]?.ToString();
+    // 从 TempData 中获取是否跳过入场动画的标志（POST 验证失败时由控制器设置为 true）
+    bool tiaoGuoDongHua = TempData["SkipAnimation"] != null && (bool)TempData["SkipAnimation"];
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>微尘咨询平台 - 登录</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Vue 2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+    <!-- 外部 CSS 样式文件 -->
+    <link href="~/CSS/DengLu/DengLuYe.css" rel="stylesheet" />
+    <link href="~/CSS/GongGong/DengLu/DengLuGongGong.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="denglu-app" v-cloak>
+        @* ========== 后端错误提示区域（绝对定位，悬浮于卡片上方，不影响布局居中） ========== *@
+        <div class="houduan-cuowu-rongqi">
+            <div v-if="houDuanErrorMsg" class="houduan-cuowu-tishi" :class="{ 'fade-out': isFadingOut }">
+                {{ houDuanErrorMsg }}
+            </div>
+        </div>
+
+        @* 登录卡片容器：若 tiaoGuoDongHua 为 true，则添加 skip-fadein 类禁用入场动画 *@
+        @using (Html.BeginForm("DengLuYe", "DengLu", FormMethod.Post, new
+        {
+            @class = "denglu-rongqi" + (tiaoGuoDongHua ? " skip-fadein" : ""),
+            @ref = "dengluForm"
+        }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="denglu-toubu">
+                <h1>微尘咨询平台</h1>
+                <p>Dust Info Platform</p>
+            </div>
+
+            <div class="denglu-zhuti">
+                <!-- 账户 -->
+                <div class="biaodan-zu">
+                    <label>账户</label>
+                    @Html.TextBoxFor(m => m.YongHuMing, new
+                    {
+                        @class = "biaodan-kongzhi",
+                        placeholder = "请输入账户",
+                        id = "TextBox1",
+                        v_model = "yongHuMing",
+                        @ref = "yongHuInput"
+                    })
+                    <span class="tishi">
+                        <span v-if="yongHuError">{{ yongHuError }}</span>
+                        <span v-else> </span>
+                    </span>
+                    @Html.ValidationMessageFor(m => m.YongHuMing, "", new { @class = "tishi", style = "display:none;" })
+                </div>
+
+                <!-- 密码 -->
+                <div class="biaodan-zu">
+                    <label>密码</label>
+                    @Html.PasswordFor(m => m.MiMa, new
+                    {
+                        @class = "biaodan-kongzhi",
+                        placeholder = "请输入密码",
+                        id = "TextBox2",
+                        v_model = "miMa",
+                        @ref = "miMaInput"
+                    })
+                    <span class="tishi">
+                        <span v-if="miMaError">{{ miMaError }}</span>
+                        <span v-else> </span>
+                    </span>
+                    @Html.ValidationMessageFor(m => m.MiMa, "", new { @class = "tishi", style = "display:none;" })
+                </div>
+
+                <!-- 选项 -->
+                <div class="biaodan-xuanxiang">
+                    <div class="jizhu-mima">
+                        @Html.CheckBoxFor(m => m.JiZhuMiMa, new { id = "CheckBox1", v_model = "jiZhuMiMa" })
+                        <label for="CheckBox1">记住密码</label>
+                    </div>
+                    <div class="lianjie-rongqi">
+                        <a href="@Url.Action("TianJiaZhangHu", "DengLu")" class="wangji-mima">注册账户</a>
+                        <span class="fenge-fu"> | </span>
+                        <a href="@Url.Action("WangJiMiMa", "DengLu")" class="wangji-mima">忘记密码</a>
+                    </div>
+                </div>
+
+                <!-- 登录按钮 -->
+                <button type="button" class="denglu-anniu" @@click="tiJiaoBiaoDan">登录</button>
+            </div>
+        }
+    </div>
+
+    <script>
+        new Vue({
+    el: '#denglu-app',
+    data: {
+        yongHuMing: '@Model.YongHuMing',
+        miMa: '',
+        jiZhuMiMa: @Model.JiZhuMiMa.ToString().ToLower(),
+        yongHuError: '',
+        miMaError: '',
+        houDuanErrorMsg: @Html.Raw(string.IsNullOrEmpty(houDuanError) ? "null" : $"'{houDuanError}'"),
+        isFadingOut: false,
+        fadeTimer: null
+    },
+    mounted: function() {
+        var self = this;
+        // 检测是否为后退/前进导航
+        var isBackForward = false;
+        if (window.performance && window.performance.navigation) {
+            isBackForward = (window.performance.navigation.type === 2);
+        }
+        if (window.performance && window.performance.getEntriesByType) {
+            var navEntries = window.performance.getEntriesByType('navigation');
+            if (navEntries.length > 0 && navEntries[0].type === 'back_forward') {
+                isBackForward = true;
+            }
+        }
+
+        if (isBackForward) {
+            // 后退时清空输入框内容
+            self.yongHuMing = '';
+            self.miMa = '';
+            self.houDuanErrorMsg = null;
+            self.isFadingOut = false;
+            if (self.fadeTimer) clearTimeout(self.fadeTimer);
+        } else {
+            if (self.houDuanErrorMsg) {
+                self.qiDongDanChuJiShi();
+            }
+        }
+    },
+    methods: {
+        qingChuCuoWu: function(field) {
+            if (field === 'yongHu') {
+                this.yongHuError = '';
+                this.$refs.yongHuInput.classList.remove('error');
+            } else if (field === 'miMa') {
+                this.miMaError = '';
+                this.$refs.miMaInput.classList.remove('error');
+            }
+        },
+        yanZhengBiaoDan: function() {
+            var isValid = true;
+            if (!this.yongHuMing || this.yongHuMing.trim() === '') {
+                this.yongHuError = '账户不能为空';
+                this.$refs.yongHuInput.classList.add('error');
+                isValid = false;
+            }
+            if (!this.miMa || this.miMa.trim() === '') {
+                this.miMaError = '密码不能为空';
+                this.$refs.miMaInput.classList.add('error');
+                isValid = false;
+            }
+            return isValid;
+        },
+        tiJiaoBiaoDan: function() {
+            this.$refs.yongHuInput.classList.remove('error');
+            this.$refs.miMaInput.classList.remove('error');
+            this.yongHuError = '';
+            this.miMaError = '';
+
+            if (!this.yanZhengBiaoDan()) return;
+
+            console.log("前端验证通过，正在提交表单...");
+            this.$refs.dengluForm.submit();
+        },
+        qiDongDanChuJiShi: function() {
+            var self = this;
+            if (this.fadeTimer) clearTimeout(this.fadeTimer);
+            this.fadeTimer = setTimeout(function() {
+                self.isFadingOut = true;
+                setTimeout(function() {
+                    self.houDuanErrorMsg = null;
+                    self.isFadingOut = false;
+                }, 500);
+            }, 2000);
+        }
+    },
+    watch: {
+        yongHuMing: function() { this.qingChuCuoWu('yongHu'); },
+        miMa: function() { this.qingChuCuoWu('miMa'); },
+        houDuanErrorMsg: function(newVal) {
+            if (newVal) {
+                this.isFadingOut = false;
+                this.qiDongDanChuJiShi();
+            }
+        }
+    },
+    beforeDestroy: function() {
+        if (this.fadeTimer) clearTimeout(this.fadeTimer);
+    }
+});
+    </script>
+</body>
+</html>

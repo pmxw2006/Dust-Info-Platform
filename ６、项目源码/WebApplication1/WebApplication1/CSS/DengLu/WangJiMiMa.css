@@ -1,0 +1,64 @@
+﻿#wangji-mima-app {
+    position: relative;
+    width: 450px;
+}
+
+/* 按钮区域需要水平排列 */
+.AnNiuQuYu {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.AnNiuFanHui {
+    padding: 10px 25px;
+    background: #6c757d;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    text-align: center;
+    flex: 1;
+}
+
+    .AnNiuFanHui:hover {
+        background: #5a6268;
+        color: #fff;
+    }
+
+.AnNiuTianJia {
+    flex: 2;
+}
+.denglu-rongqi.skip-fadein {
+    animation: none;
+}
+.biaodan-zu {
+    margin-bottom: 0px;
+}
+/* 密码强度条样式（与添加账户页一致） */
+.MiMaQiangDuTiao {
+    height: 5px;
+    background: #ddd;
+    border-radius: 3px;
+    margin: 5px 0;
+    width: 100%;
+}
+
+.mi-ma-qiang-du-ruo {
+    background: #c15755;
+    width: 25%;
+}
+
+.mi-ma-qiang-du-zhong {
+    background: #f0ad4e;
+    width: 50%;
+}
+
+.mi-ma-qiang-du-qiang {
+    background: #5cb85c;
+    width: 75%;
+}
+
+.mi-ma-qiang-du-fei-qiang {
+    background: #2e6da4;
+    width: 100%;
+}

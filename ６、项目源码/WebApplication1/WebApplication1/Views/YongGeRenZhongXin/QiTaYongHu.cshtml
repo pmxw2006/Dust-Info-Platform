@@ -1,0 +1,236 @@
+﻿@{
+    ViewBag.Title = "用户主页";
+    Layout = "~/Views/Shared/_YongHu.cshtml";
+}
+@section styles {
+    <link href="~/CSS/GeRenZhongXin/QiTa.css" rel="stylesheet" />
+    <style>
+        /* 全屏加载遮罩（屏幕正中间） */
+        #global-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 99999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: #fff;
+            font-size: 18px;
+            backdrop-filter: blur(4px);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #2c4050;
+            border-top-color: #4f8bc9;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        @@keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+}
+
+<!-- 全局加载遮罩（初始显示） -->
+<div id="global-loading">
+    <div class="loading-spinner"></div>
+    <div>正在加载用户数据...</div>
+</div>
+
+<!-- 页面主体内容（初始隐藏，数据加载完成后显示） -->
+<div id="main-content" style="display: none;">
+    <div class="page-content">
+        <div class="user-card" id="yonghu">
+            <h1>@ViewBag.YongHu.YongHuMing</h1>
+            <p>ID: @ViewBag.YongHu.YongHuID</p>
+
+            <!-- 存在关系记录时，根据每条记录的状态显示按钮 -->
+            <div v-if="YongHu.length > 0" v-for="i in YongHu">
+                <div v-if="i.YongHuIDYI == id">
+                    <div v-if="i.GuangZhuZhuangTai == 1">
+                        <input type="button" value="关注" class="guan-zhu" @@click="GuanzhuYI(i.YongHuIDER, i.GuangZhuZhuangTai)" :disabled="buttona"/>
+                    </div>
+                    <div v-if="i.GuangZhuZhuangTai == 0">
+                        <input type="button" value="已关注" class="guan-zhu-yi" @@click="GuanzhuYI(i.YongHuIDER, i.GuangZhuZhuangTai)" :disabled="buttona"/>
+                        <input type="button" value="私聊" class="si-liao" @@click="SiLiao()" :disabled="buttona"/>
+                    </div>
+                </div>
+                <div v-if="i.YongHuIDER == id">
+                    <div v-if="i.HuiGuanZhuangTai == 1">
+                        <input type="button" value="关注" class="guan-zhu" @@click="GuanzhuER(i.YongHuIDYI, i.HuiGuanZhuangTai)" :disabled="buttona"/>
+                    </div>
+                    <div v-if="i.HuiGuanZhuangTai == 0">
+                        <input type="button" value="已关注" class="guan-zhu-yi" @@click="GuanzhuER(i.YongHuIDYI, i.HuiGuanZhuangTai)" :disabled="buttona"/>
+                        <input type="button" value="私聊" class="si-liao" @@click="SiLiao()" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- 没有任何关系记录时，显示初始关注按钮 -->
+            <div v-if="YongHu.length === 0">
+                <input type="button" value="关注" @@click="guanzhu(@ViewBag.YongHu.YongHuID)" />
+            </div>
+
+            @if (ViewBag.ZhuangTai == 0)
+            {
+                <p class="feng-jin">该账户违规，已被管理员封禁</p>
+            }
+        </div>
+        <!-- 帖子列表 -->
+        <div id="ZuoPing">
+            @{
+                var tieZiList = ViewBag.TieZi as List<WebApplication1.Models.YongHuB.YongHuJiBenXinxi>;
+                int currentPage = ViewBag.CurrentPage ?? 1;
+                int totalPages = ViewBag.TotalPages ?? 1;
+            }
+            @if (tieZiList == null || !tieZiList.Any())
+            {
+                <div class="no-data">暂无帖子</div>
+            }
+            else
+            {
+                foreach (var item in tieZiList)
+                {
+                    <div class="card-list">
+                        <a href="/YongHu/TieZiNeiRong?id=@item.TieZiID">
+                            <div class="card-list-left">
+                                <img src="/Img/@item.Lujing" alt="@item.TieZiMing" />
+                            </div>
+                            <div class="card-list-right">
+                                <div class="list-Top">
+                                    <p class="bt">@item.TieZiMing</p>
+                                    <p class="yh">@ViewBag.YongHu.YongHuMing</p>
+                                </div>
+                                <div class="list-Footer">
+                                    <p class="time">@item.FaBuShiJian</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            }
+
+            <!-- 分页（始终显示） -->
+            <div id="FanYe">
+                <div class="pagination">
+                    @{
+                        string baseUrl = Url.Action("QiTaYongHu", "YongGeRenZhongXin", new { id = ViewBag.YongHuID, page = 1 });
+                        baseUrl = baseUrl.Replace("page=1", "page={0}");
+                    }
+                    <a href="@string.Format(baseUrl, 1)" class="@(currentPage <= 1 ? "disabled" : "")">首页</a>
+                    <a href="@string.Format(baseUrl, currentPage - 1)" class="@(currentPage <= 1 ? "disabled" : "")">上一页</a>
+                    <span>第 @currentPage / @totalPages 页</span>
+                    <a href="@string.Format(baseUrl, currentPage + 1)" class="@(currentPage >= totalPages ? "disabled" : "")">下一页</a>
+                    <a href="@string.Format(baseUrl, totalPages)" class="@(currentPage >= totalPages ? "disabled" : "")">尾页</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.14/vue.min.js"></script>
+<script>
+    new Vue({
+        el: "#yonghu",
+        data: {
+            id:@ViewBag.YId,
+            qitaiYongHuid:@ViewBag.YongHu.YongHuID,
+            buttona: false,
+            YongHu: []
+        },
+        created: function () {
+            this.shujujiazai();
+        },
+        methods: {
+            shujujiazai: function () {
+                const _self = this;
+                fetch("/Models/HaoYou/HaoYouHuoQu.ashx", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ YongHuID: _self.qitaiYongHuid })
+                })
+                    .then(p => p.json())
+                    .then(p => {
+                        if (p != null) {
+                            _self.YongHu = p;
+                        } else {
+                            _self.YongHu = [];
+                        } console.log(_self.YongHu)
+                        console.log(_self.id)
+                    })
+                    .catch(error => {
+                        console.error("获取好友关系失败:", error);
+                        alert("加载数据失败，请刷新重试");
+                    })
+                    .finally(() => {
+                        // 数据加载完成（无论成功或失败），隐藏加载遮罩，显示主内容
+                        document.getElementById('global-loading').style.display = 'none';
+                        document.getElementById('main-content').style.display = 'block';
+                    });
+            }            ,
+            GuanzhuER: function (id, zhuangtai) {
+                const _self = this;
+                _self.buttona = true; // 禁用按钮，防止重复点击
+                fetch("/Models/HaoYou/XiuGaiZhuangTai.ashx", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ YongHuIDYI: id, ZhuangTai: zhuangtai })
+                }).then(p => p.json())
+                    .then(p => {
+                        if (p.success) {
+                            this.shujujiazai();
+                            _self.buttona = false; // 禁用按钮，防止重复点击
+                        }
+                    })
+            },
+            SiLiao: function () {
+                window.location.href = "/HaoYou/ZhuYe"
+            },
+            GuanzhuYI: function (id, zhuangtai) {
+                const _self = this;
+                _self.buttona = true; // 禁用按钮，防止重复点击
+                fetch("/Models/HaoYou/XiuGaiZhuangTai.ashx", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ YongHuIDER: id, ZhuangTai: zhuangtai })
+                }).then(p => p.json())
+                    .then(p => {
+                        if (p.success) {
+                            this.shujujiazai();
+                            _self.buttona = false; // 禁用按钮，防止重复点击
+                        }
+                    })
+            },
+            guanzhu: function (id) {
+                const _self = this;
+                _self.buttona = true; // 禁用按钮，防止重复点击
+                fetch("/Models/HaoYou/XiuGaiZhuangTai.ashx", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ YongHuIDER: id, ZhuangTai: 0 })   // 0 表示执行关注动作
+                }).then(p => p.json()).then(p => {
+                    if (p.success) {
+                        this.shujujiazai();
+                        _self.buttona = false; // 禁用按钮，防止重复点击
+                    }
+                });
+            }
+        }
+    })
+</script>

@@ -1,0 +1,301 @@
+<style >
+[v-cloak] {
+    display: none;
+}
+
+/* 整体容器 - 全屏玻璃效果 */
+.liaotian-zhengti {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    background: rgba(27, 40, 56, 0.7);
+    backdrop-filter: blur(8px);
+    overflow: hidden;
+    position: relative;
+}
+
+/* 左侧好友列表 */
+.ce-bian-lan {
+    width: 260px;
+    background: rgba(18, 25, 35, 0.9);
+    border-right: 1px solid rgba(102, 192, 244, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.qun-liao-biao-ti {
+    color: #fff;
+    font-size: 18px;
+    text-align: center;
+    padding: 20px 0 12px;
+    letter-spacing: 2px;
+    border-bottom: 1px solid rgba(102, 192, 244, 0.2);
+    margin-bottom: 10px;
+}
+
+.qun-liao-xiang {
+    padding: 12px 16px;
+    color: #acdbf5;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+    .qun-liao-xiang:hover {
+        background: rgba(102, 192, 244, 0.15);
+    }
+
+    .qun-liao-xiang.huoyue {
+        background: rgba(102, 192, 244, 0.2);
+        border-left: 3px solid #66c0f4;
+        color: #fff;
+    }
+
+.touxiang {
+    width: 40px;
+    height: 40px;
+    background: #4f8bc9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.haoyou-mingzi {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 右侧聊天区域 */
+.liaotian-qu {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.liaotian-dingbu {
+    padding: 16px 24px;
+    background: rgba(18, 25, 35, 0.7);
+    border-bottom: 1px solid rgba(102, 192, 244, 0.3);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+    backdrop-filter: blur(4px);
+}
+
+/* 消息列表 */
+.xiaoxi-lie {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.xiaoxi-tiao {
+    display: flex;
+    flex-direction: column;
+    max-width: 75%;
+}
+
+    .xiaoxi-tiao.zijid {
+        align-self: flex-end;
+    }
+
+    .xiaoxi-tiao.duifang {
+        align-self: flex-start;
+    }
+
+.xiaoxi-yonghu {
+    font-size: 12px;
+    color: #8fbedc;
+    margin-bottom: 4px;
+    margin-left: 8px;
+}
+
+.xiaoxi-neirong {
+    position: relative;
+    padding: 10px 14px;
+    border-radius: 18px;
+    background: rgba(34, 45, 58, 0.9);
+    border: 1px solid rgba(102, 192, 244, 0.3);
+    color: #e9e9e9;
+    word-break: break-word;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.xiaoxi-tiao.zijid .xiaoxi-neirong {
+    background: linear-gradient(135deg, #2c4c6e, #1a3a4f);
+    border-color: rgba(102, 192, 244, 0.5);
+}
+.xiaoxi-tishi {
+    font-size: 10px;
+    text-align:center;
+}
+.xiaoxi-shijian {
+    font-size: 10px;
+    color: #6b8a9e;
+    margin-top: 4px;
+    text-align: right;
+    padding-right: 8px;
+}
+
+/* 删除按钮悬浮样式 */
+.btn-shanchu {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: rgba(200, 60, 60, 0.9);
+    border: none;
+    color: white;
+    font-size: 10px;
+    border-radius: 12px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.xiaoxi-tiao:hover .btn-shanchu {
+    opacity: 1;
+}
+
+.btn-shanchu:hover {
+    background: #ff4444;
+}
+
+/* 输入区域 */
+.shuru-qu {
+    display: flex;
+    gap: 12px;
+    padding: 16px 24px;
+    background: rgba(18, 25, 35, 0.7);
+    border-top: 1px solid rgba(102, 192, 244, 0.3);
+}
+
+.shuru-kuang {
+    flex: 1;
+    padding: 6px 12px;
+    background: rgba(34, 45, 58, 0.8);
+    border: 1px solid rgba(102, 192, 244, 0.3);
+    border-radius: 24px;
+    color: #e9e9e9;
+    font-size: 14px;
+    outline: none;
+}
+
+    .shuru-kuang:focus {
+        border-color: #66c0f4;
+        background: rgba(40, 55, 70, 0.9);
+    }
+
+.fasong-an {
+    padding: 0 24px;
+    background: linear-gradient(135deg, #2c4c6e, #1a3a4f);
+    color: #eef5ff;
+    border: 1px solid rgba(102, 192, 244, 0.2);
+    border-radius: 24px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+    .fasong-an:hover {
+        background: linear-gradient(135deg, #3e6d96, #23526c);
+    }
+
+    .fasong-an:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+/* 滚动条 */
+.xiaoxi-lie::-webkit-scrollbar {
+    width: 5px;
+}
+
+.xiaoxi-lie::-webkit-scrollbar-thumb {
+    background: #4f8bc9;
+    border-radius: 3px;
+}
+
+/* 全局加载遮罩 - 屏幕正中间 */
+.global-loading-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(6px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+}
+
+.global-loading-content {
+    text-align: center;
+    background: rgba(18, 25, 35, 0.95);
+    padding: 24px 32px;
+    border-radius: 16px;
+    border: 1px solid rgba(102, 192, 244, 0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.global-loading-spinner {
+    width: 44px;
+    height: 44px;
+    border: 4px solid rgba(102, 192, 244, 0.3);
+    border-top-color: #66c0f4;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
+}
+
+.global-loading-text {
+    color: #e9e9e9;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+@@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.link-like {
+    background: transparent;
+    border: none;
+    color: inherit; /* 文字颜色与父元素一致 */
+    text-decoration: none; /* 无下划线 */
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+    outline: none;
+}
+
+    .link-like:hover {
+        color: #a3dcff; /* 悬停时更亮的浅蓝 */
+        text-decoration: underline; /* 保持下划线，纯色变化即可 */
+    }
+
+

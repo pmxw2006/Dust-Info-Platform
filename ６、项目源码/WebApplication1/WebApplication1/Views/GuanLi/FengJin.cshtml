@@ -1,0 +1,233 @@
+﻿@{
+    ViewBag.Title = "用户封禁管理";
+    Layout = "~/Views/Shared/_GuanLi.cshtml";
+}
+@section styles {
+    <link href="~/CSS/GongGong/DengLu/DengLuGongGong.css" rel="stylesheet" />
+    <link href="~/CSS/GuanLi/FengJin.css" rel="stylesheet" />
+}
+
+<div class="guanli-rongqi" id="fengjin-app" v-cloak>
+    <div class="mo-kuai-biao-ti">
+        <h2>用户封禁管理</h2>
+        <div class="fu-biao-ti">管理用户账号状态</div>
+    </div>
+
+    <div class="sousuo-qu">
+        <input type="text" class="sousuo-shuru" placeholder="用户名" v-model="yongHuMing" @@keyup.enter="souSuo" />
+        <input type="text" class="sousuo-shuru" placeholder="邮箱" v-model="youXiang" @@keyup.enter="souSuo" />
+        <input type="text" class="sousuo-shuru" placeholder="用户ID" v-model="yongHuID" @@keyup.enter="souSuo" />
+        <button class="pagination-input" @@click="souSuo">搜索</button>
+        <button class="pagination-input" @@click="qingKong">清空</button>
+    </div>
+
+    <div class="table-wrapper" :style="{ minHeight: firstLoad ? '480px' : '400px' }">
+        <div v-if="firstLoad" class="loading-container" style="min-height:480px">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">加载中，请稍候...</p>
+        </div>
+        <template v-else>
+            <table class="biao-ge">
+                <thead>
+                    <tr><th>ID</th><th>用户名</th><th>邮箱</th><th>状态</th><th>权限</th><th>操作</th></tr>
+                </thead>
+                <tbody>
+                    <tr v-for="user in list" :key="user.YongHuID">
+                        <td>{{ user.YongHuID }}</td>
+                        <td>{{ user.YongHuMing }}</td>
+                        <td>{{ user.YouXiang }}</td>
+                        <td :class="user.ZhuangTai == 1 ? 'zheng-chang' : 'feng-jin'">{{ user.ZhuangTai == 1 ? '正常' : '封禁' }}</td>
+                        <td>{{ user.QuanXian == 1 ? '管理员' : '用户'}}</td>
+                        <td>
+                            <button v-if="user.ZhuangTai == 1" class="pagination-input" @@click="kaiQiFengJin(user)">封禁</button>
+                            <button v-else class="pagination-input" @@click="kaiQiJieFeng(user)">解封</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div v-if="list.length === 0" class="no-data">暂无用户数据</div>
+        </template>
+    </div>
+
+    <div id="FanYe" v-if="!firstLoad">
+        <div class="pagination">
+            <input type="button" value="首页" class="pagination-input" :disabled="page <= 1" @@click="huanYe(1)" />
+            <input type="button" value="上一页" class="pagination-input" :disabled="page <= 1" @@click="huanYe(page - 1)" />
+            <span>第 {{ page }} / {{ totalPages }} 页</span>
+            <input type="button" value="下一页" class="pagination-input" :disabled="page >= totalPages" @@click="huanYe(page + 1)" />
+            <input type="button" value="尾页" class="pagination-input" :disabled="page >= totalPages" @@click="huanYe(totalPages)" />
+        </div>
+    </div>
+
+    <!-- 封禁确认模态框 -->
+    <div class="mo-tai-zhe-zhao" v-if="showFengJinModal" @@click.self="guanBiFengJinMoTai">
+        <div class="mo-tai-ka-pian">
+            <h3>确认封禁</h3>
+            <p><strong>用户ID：</strong> {{ currentFengJinUser.YongHuID }}</p>
+            <p><strong>用户名：</strong> {{ currentFengJinUser.YongHuMing }}</p>
+            <div>
+                <label>封禁原因：</label>
+                <input type="text" class="mo-tai-shuru" v-model="fengJinYuanYin" placeholder="请输入封禁原因" />
+            </div>
+            <div class="mo-tai-an-niu">
+                <button class="pagination-input" @@click="guanBiFengJinMoTai">取消</button>
+                <button class="pagination-input" @@click="zhiXingFengJin">确认封禁</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 解封确认模态框 -->
+    <div class="mo-tai-zhe-zhao" v-if="showJieFengModal" @@click.self="guanBiJieFengMoTai">
+        <div class="mo-tai-ka-pian">
+            <h3>确认解封</h3>
+            <p><strong>用户ID：</strong> {{ currentJieFengUser.YongHuID }}</p>
+            <p><strong>用户名：</strong> {{ currentJieFengUser.YongHuMing }}</p>
+            <p style="color:#8fbedc;">确定要将该用户恢复正常状态吗？</p>
+            <div class="mo-tai-an-niu">
+                <button class="pagination-input" @@click="guanBiJieFengMoTai">取消</button>
+                <button class="pagination-input" @@click="zhiXingJieFeng">确认解封</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 消息提示模态框 -->
+    <div class="mo-tai-zhe-zhao" v-if="showMessageModal" @@click.self="guanBiXiaoXiMoTai">
+        <div class="mo-tai-ka-pian">
+            <h3>提示</h3>
+            <p style="margin:15px 0; word-break:break-all;">{{ messageText }}</p>
+            <div class="mo-tai-an-niu" style="justify-content:center;">
+                <button class="pagination-input" @@click="guanBiXiaoXiMoTai">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.14/vue.min.js"></script>
+<script>
+    new Vue({
+        el: '#fengjin-app',
+        data: {
+            list: [],
+            page: 1,
+            pageSize: 5,
+            total: 0,
+            totalPages: 1,
+            yongHuMing: '',
+            youXiang: '',
+            yongHuID: '',
+            showFengJinModal: false,
+            showJieFengModal: false,
+            currentFengJinUser: {},
+            currentJieFengUser: {},
+            fengJinYuanYin: '',
+            firstLoad: true,
+            showMessageModal: false,
+            messageText: ''
+        },
+        mounted() { this.jiaZaiShuJu(); },
+        methods: {
+            jiaZaiShuJu() {
+                var self = this;
+                var params = new URLSearchParams();
+                if (this.yongHuMing) params.append('yongHuMing', this.yongHuMing);
+                if (this.youXiang) params.append('youXiang', this.youXiang);
+                if (this.yongHuID) params.append('yongHuID', this.yongHuID);
+                params.append('page', this.page);
+                params.append('pageSize', this.pageSize);
+
+                fetch(`/GuanLi/LieBiao?${params.toString()}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        self.list = data.list.map(function (user) {
+                            return { ...user, ZhuangTai: parseInt(user.ZhuangTai) || 0 };
+                        });
+                        self.total = data.total;
+                        self.totalPages = data.totalPages || 1;
+                        self.page = data.page;
+                    })
+                    .catch(err => {
+                        console.error('加载失败', err);
+                        self.xianShiXiaoXi('数据加载失败，请稍后重试');
+                    })
+                    .finally(() => {
+                        if (self.firstLoad) setTimeout(() => { self.firstLoad = false; }, 600);
+                    });
+            },
+            souSuo() { this.page = 1; this.jiaZaiShuJu(); },
+            qingKong() { this.yongHuMing = ''; this.youXiang = ''; this.yongHuID = ''; this.souSuo(); },
+            huanYe(p) { if (p < 1 || p > this.totalPages) return; this.page = p; this.jiaZaiShuJu(); },
+
+            // 封禁相关
+            kaiQiFengJin(user) {
+                this.currentFengJinUser = user;
+                this.fengJinYuanYin = '';
+                this.showFengJinModal = true;
+            },
+            guanBiFengJinMoTai() {
+                this.showFengJinModal = false;
+                this.currentFengJinUser = {};
+            },
+            zhiXingFengJin() {
+                var self = this;
+                var formData = new FormData();
+                formData.append('yongHuID', self.currentFengJinUser.YongHuID);
+                formData.append('yuanYin', self.fengJinYuanYin || '未填写');
+                fetch('/GuanLi/FengJinYongHu', { method: 'POST', body: formData })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            self.guanBiFengJinMoTai();
+                            self.jiaZaiShuJu();
+                        } else {
+                            self.xianShiXiaoXi(data.message || '操作失败');
+                        }
+                    })
+                    .catch(err => {
+                        console.error('封禁失败', err);
+                        self.xianShiXiaoXi('网络错误，封禁失败');
+                    });
+            },
+
+            // 解封相关
+            kaiQiJieFeng(user) {
+                this.currentJieFengUser = user;
+                this.showJieFengModal = true;
+            },
+            guanBiJieFengMoTai() {
+                this.showJieFengModal = false;
+                this.currentJieFengUser = {};
+            },
+            zhiXingJieFeng() {
+                var self = this;
+                fetch('/GuanLi/JieFengYongHu', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `yongHuID=${self.currentJieFengUser.YongHuID}`
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            self.guanBiJieFengMoTai();
+                            self.jiaZaiShuJu();
+                        } else {
+                            self.xianShiXiaoXi(data.message || '操作失败');
+                        }
+                    })
+                    .catch(err => {
+                        console.error('解封失败', err);
+                        self.xianShiXiaoXi('网络错误，解封失败');
+                    });
+            },
+
+            // 消息模态框控制
+            xianShiXiaoXi(text) {
+                this.messageText = text;
+                this.showMessageModal = true;
+            },
+            guanBiXiaoXiMoTai() {
+                this.showMessageModal = false;
+                this.messageText = '';
+            }
+        }
+    });
+</script>

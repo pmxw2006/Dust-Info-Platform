@@ -1,0 +1,348 @@
+﻿@model WebApplication1.Models.DengLu.WangJiMiMaViewModel
+@{
+    Layout = null;
+    string chengGongMsg = TempData["SuccessMessage"]?.ToString();   // 成功消息
+    string houDuanError = TempData["ErrorMessage"]?.ToString();
+    bool skipAnimation = TempData["SkipAnimation"] != null && (bool)TempData["SkipAnimation"];
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>微尘咨询平台 - 忘记密码</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+    <link href="~/CSS/DengLu/DengLuYe.css" rel="stylesheet" />
+    <link href="~/CSS/GongGong/DengLu/DengLuGongGong.css" rel="stylesheet" />
+    <link href="~/CSS/DengLu/WangJiMiMa.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="wangji-mima-app" v-cloak>
+        @{
+            var formClasses = "denglu-rongqi ka-pian-dong-hua";
+            if (skipAnimation)
+            {
+                formClasses += " skip-fadein";
+            }
+        }
+        @using (Html.BeginForm("WangJiMiMa", "DengLu", FormMethod.Post, new { @class = formClasses, @ref = "wangjiForm" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="denglu-toubu">
+                <h1>找回密码</h1>
+                <p>Forgot Password</p>
+            </div>
+
+            <div class="denglu-zhuti">
+                <!-- 成功提示（新增） -->
+                <div v-if="chengGongMsg" class="chenggong-tishi" style="display:block;">{{ chengGongMsg }}</div>
+
+                <!-- 后端错误提示 -->
+                <div class="cuowu-tishi-rongqi">
+                    <div v-if="houDuanErrorMsg" class="houduan-cuowu-tishi" :class="{ 'fade-out': isFadingOut }">
+                        {{ houDuanErrorMsg }}
+                    </div>
+                </div>
+
+                <!-- 账户 -->
+                <div class="biaodan-zu">
+                    <label>账户</label>
+                    @Html.TextBoxFor(m => m.YongHuMing, new
+                    {
+                        @class = "biaodan-kongzhi",
+                        placeholder = "请输入账户",
+                        v_model = "yongHuMing",
+                        @ref = "yongHuInput"
+                    })
+                    <span class="tishi">
+                        <span v-if="yongHuError">{{ yongHuError }}</span>
+                        <span v-else> </span>
+                    </span>
+                    @Html.ValidationMessageFor(m => m.YongHuMing, "", new { @class = "tishi", style = "display:none;" })
+                </div>
+
+                <!-- 邮箱 -->
+                <div class="biaodan-zu">
+                    <label>注册邮箱</label>
+                    @Html.TextBoxFor(m => m.YouXiang, new
+                    {
+                        @class = "biaodan-kongzhi",
+                        placeholder = "请输入注册时使用的邮箱",
+                        v_model = "youXiang",
+                        @ref = "youXiangInput"
+                    })
+                    <span class="tishi">
+                        <span v-if="youXiangError">{{ youXiangError }}</span>
+                        <span v-else> </span>
+                    </span>
+                    @Html.ValidationMessageFor(m => m.YouXiang, "", new { @class = "tishi", style = "display:none;" })
+                </div>
+
+                <!-- 新密码 -->
+                <div class="biaodan-zu">
+                    <label>新密码</label>
+                    @Html.PasswordFor(m => m.XinMiMa, new
+                    {
+                        @class = "biaodan-kongzhi",
+                        placeholder = "请输入新密码（6-20位）",
+                        v_model = "xinMiMa",
+                        @ref = "xinMiMaInput"
+                    })
+                    <span class="tishi">
+                        <span v-if="xinMiMaError">{{ xinMiMaError }}</span>
+                        <span v-else> </span>
+                    </span>
+                    <div class="MiMaQiangDuTiao" :class="miMaQiangDuClass"></div>
+                    <span style="font-size:12px;color:#acdbf5;">{{ miMaQiangDuText }}</span>
+                    @Html.ValidationMessageFor(m => m.XinMiMa, "", new { @class = "tishi", style = "display:none;" })
+                </div>
+
+                <!-- 确认新密码 -->
+                <div class="biaodan-zu">
+                    <label>确认新密码</label>
+                    @Html.PasswordFor(m => m.QueRenXinMiMa, new
+                    {
+                        @class = "biaodan-kongzhi",
+                        placeholder = "请再次输入新密码",
+                        v_model = "queRenXinMiMa",
+                        @ref = "queRenInput"
+                    })
+                    <span class="tishi">
+                        <span v-if="queRenError">{{ queRenError }}</span>
+                        <span v-else> </span>
+                    </span>
+                    @Html.ValidationMessageFor(m => m.QueRenXinMiMa, "", new { @class = "tishi", style = "display:none;" })
+                </div>
+
+                <!-- 密码要求提示 -->
+                <div style="background-color:rgba(34,45,58,0.6); padding:12px; border-radius:4px; margin-top:15px;">
+                    <div style="color:#acdbf5; margin-bottom:8px;">密码要求：</div>
+                    <ul style="margin:0; padding-left:20px; color:#8fbedc; font-size:13px;">
+                        <li>密码长度6-20位</li>
+                        <li>建议包含字母大小写、数字和特殊字符</li>
+                        <li>较强的密码可以更好地保护账户安全</li>
+                    </ul>
+                </div>
+
+                <!-- 按钮区域 -->
+                <div class="AnNiuQuYu">
+                    <button type="button" class="denglu-anniu AnNiuTianJia" @@click="tiJiaoBiaoDan">修改密码</button>
+                    <a href="@Url.Action("DengLuYe", "DengLu")" class="AnNiuFanHui">返回登录</a>
+                </div>
+            </div>
+        }
+    </div>
+
+    <script>
+    (function() {
+        var isPageRestored = false;
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                isPageRestored = true;
+            }
+        });
+
+        new Vue({
+            el: '#wangji-mima-app',
+            data: {
+                yongHuMing: '@Model.YongHuMing',
+                youXiang: '@Model.YouXiang',
+                xinMiMa: '',
+                queRenXinMiMa: '',
+                yongHuError: '',
+                youXiangError: '',
+                xinMiMaError: '',
+                queRenError: '',
+                chengGongMsg: @Html.Raw(Json.Encode(chengGongMsg)),   // 成功消息
+                houDuanErrorMsg: @Html.Raw(Json.Encode(houDuanError)),
+                isFadingOut: false,
+                fadeTimer: null,
+                successTimer: null,      // 成功跳转计时器
+                miMaQiangDuClass: '',
+                miMaQiangDuText: '密码强度：无'
+            },
+            created: function() {
+                if (isPageRestored) {
+                    this.resetAllFields();
+                }
+            },
+            mounted: function() {
+                var self = this;
+                if (isPageRestored) {
+                    self.resetAllFields();
+                    isPageRestored = false;
+                }
+                if (self.houDuanErrorMsg) {
+                    self.qiDongDanChuJiShi();
+                }
+                // 成功消息出现时启动跳转计时器
+                if (self.chengGongMsg) {
+                    self.qiDongChengGongTiaoZhuan();
+                }
+                window.addEventListener('pageshow', function(e) {
+                    if (e.persisted) {
+                        self.resetAllFields();
+                    }
+                });
+            },
+            methods: {
+                resetAllFields: function() {
+                    this.yongHuMing = '';
+                    this.youXiang = '';
+                    this.xinMiMa = '';
+                    this.queRenXinMiMa = '';
+                    this.yongHuError = '';
+                    this.youXiangError = '';
+                    this.xinMiMaError = '';
+                    this.queRenError = '';
+                    this.houDuanErrorMsg = null;
+                    this.chengGongMsg = null;
+                    this.isFadingOut = false;
+                    this.miMaQiangDuClass = '';
+                    this.miMaQiangDuText = '密码强度：无';
+                    if (this.fadeTimer) {
+                        clearTimeout(this.fadeTimer);
+                        this.fadeTimer = null;
+                    }
+                    if (this.successTimer) {
+                        clearTimeout(this.successTimer);
+                        this.successTimer = null;
+                    }
+                    var refs = ['yongHuInput', 'youXiangInput', 'xinMiMaInput', 'queRenInput'];
+                    var self = this;
+                    refs.forEach(function(refName) {
+                        if (self.$refs[refName]) {
+                            self.$refs[refName].classList.remove('error');
+                        }
+                    });
+                },
+                qingChuCuoWu: function(field) {
+                    if (field === 'yongHu') {
+                        this.yongHuError = '';
+                        this.$refs.yongHuInput.classList.remove('error');
+                    } else if (field === 'youXiang') {
+                        this.youXiangError = '';
+                        this.$refs.youXiangInput.classList.remove('error');
+                    } else if (field === 'xinMiMa') {
+                        this.xinMiMaError = '';
+                        this.$refs.xinMiMaInput.classList.remove('error');
+                    } else if (field === 'queRen') {
+                        this.queRenError = '';
+                        this.$refs.queRenInput.classList.remove('error');
+                    }
+                },
+                yanZhengBiaoDan: function() {
+                    var isValid = true;
+                    if (!this.yongHuMing || this.yongHuMing.trim() === '') {
+                        this.yongHuError = '账户不能为空';
+                        this.$refs.yongHuInput.classList.add('error');
+                        isValid = false;
+                    }
+                    if (!this.youXiang || this.youXiang.trim() === '') {
+                        this.youXiangError = '邮箱不能为空';
+                        this.$refs.youXiangInput.classList.add('error');
+                        isValid = false;
+                    } else {
+                        var emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+                        if (!emailRegex.test(this.youXiang.trim())) {
+                            this.youXiangError = '邮箱格式不正确';
+                            this.$refs.youXiangInput.classList.add('error');
+                            isValid = false;
+                        }
+                    }
+                    if (!this.xinMiMa || this.xinMiMa.trim() === '') {
+                        this.xinMiMaError = '新密码不能为空';
+                        this.$refs.xinMiMaInput.classList.add('error');
+                        isValid = false;
+                    } else if (this.xinMiMa.length < 6 || this.xinMiMa.length > 20) {
+                        this.xinMiMaError = '密码长度需在6-20位之间';
+                        this.$refs.xinMiMaInput.classList.add('error');
+                        isValid = false;
+                    }
+                    if (this.xinMiMa !== this.queRenXinMiMa) {
+                        this.queRenError = '两次输入的密码不一致';
+                        this.$refs.queRenInput.classList.add('error');
+                        isValid = false;
+                    }
+                    return isValid;
+                },
+                tiJiaoBiaoDan: function() {
+                    this.$refs.yongHuInput.classList.remove('error');
+                    this.$refs.youXiangInput.classList.remove('error');
+                    this.$refs.xinMiMaInput.classList.remove('error');
+                    this.$refs.queRenInput.classList.remove('error');
+                    this.yongHuError = '';
+                    this.youXiangError = '';
+                    this.xinMiMaError = '';
+                    this.queRenError = '';
+
+                    if (!this.yanZhengBiaoDan()) return;
+                    this.$refs.wangjiForm.submit();
+                },
+                updateMiMaQiangDu: function(pwd) {
+                    var strength = 0;
+                    if (pwd.length >= 6) strength++;
+                    if (pwd.length >= 8) strength++;
+                    if (pwd.length >= 12) strength++;
+                    if (/[a-z]/.test(pwd)) strength++;
+                    if (/[A-Z]/.test(pwd)) strength++;
+                    if (/[0-9]/.test(pwd)) strength++;
+                    if (/[^a-zA-Z0-9]/.test(pwd)) strength++;
+                    var classes = ['','mi-ma-qiang-du-ruo','mi-ma-qiang-du-zhong','mi-ma-qiang-du-qiang','mi-ma-qiang-du-fei-qiang'];
+                    var texts = ['无','弱','中','强','非常强'];
+                    var idx = strength <= 2 ? 1 : (strength <= 4 ? 2 : (strength <= 6 ? 3 : 4));
+                    if (pwd.length === 0) idx = 0;
+                    this.miMaQiangDuClass = classes[idx];
+                    this.miMaQiangDuText = '密码强度：' + texts[idx];
+                },
+                qiDongDanChuJiShi: function() {
+                    var self = this;
+                    if (this.fadeTimer) clearTimeout(this.fadeTimer);
+                    this.fadeTimer = setTimeout(function() {
+                        self.isFadingOut = true;
+                        setTimeout(function() {
+                            self.houDuanErrorMsg = null;
+                            self.isFadingOut = false;
+                        }, 500);
+                    }, 2000);
+                },
+                // 成功消息显示2秒后跳转到登录页
+                qiDongChengGongTiaoZhuan: function() {
+                    var self = this;
+                    if (this.successTimer) clearTimeout(this.successTimer);
+                    this.successTimer = setTimeout(function() {
+                        self.chengGongMsg = null;
+                        window.location.href = '@Url.Action("DengLuYe", "DengLu")';
+                    }, 2000);
+                }
+            },
+            watch: {
+                yongHuMing: function() { this.qingChuCuoWu('yongHu'); },
+                youXiang: function() { this.qingChuCuoWu('youXiang'); },
+                xinMiMa: function(v) {
+                    this.qingChuCuoWu('xinMiMa');
+                    this.updateMiMaQiangDu(v);
+                },
+                queRenXinMiMa: function() { this.qingChuCuoWu('queRen'); },
+                houDuanErrorMsg: function(newVal) {
+                    if (newVal) {
+                        this.isFadingOut = false;
+                        this.qiDongDanChuJiShi();
+                    }
+                },
+                chengGongMsg: function(newVal) {
+                    if (newVal) {
+                        this.qiDongChengGongTiaoZhuan();
+                    }
+                }
+            },
+            beforeDestroy: function() {
+                if (this.fadeTimer) clearTimeout(this.fadeTimer);
+                if (this.successTimer) clearTimeout(this.successTimer);
+            }
+        });
+    })();
+    </script>
+</body>
+</html>

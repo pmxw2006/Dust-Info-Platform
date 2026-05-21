@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/YongHu.css" rel="stylesheet" type="text/css" />
+    @RenderSection("styles", required: false)
+</head>
+<body>
+    <div class="zhengti">
+        <div class="header">
+            <div>
+                <h1>微尘咨询平台</h1>
+                <ul>
+                    <li>
+                        <a href="@Url.Action("Index", "YongHu")">主页</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("TianJia", "YongHu")">添加帖子</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("ZhuYe", "HaoYou")">私信</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("LiaoTianShi", "LiaoTian")">聊天室</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="geren">
+                <a href="@Url.Action("GeReXiangXi", "YongGeRenZhongXin")">个人中心</a> |
+                <a href="@Url.Action("DengChu", "DengLu")">退出登录</a>
+            </div>
+        </div>
+        <div class="main">
+            @RenderBody()
+        </div>
+        <div class="footer">
+            12233445
+        </div>
+    </div>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,218 @@
+﻿@model WebApplication1.Models.GeRenZhongXin.GeRenXiangXi
+@{
+    ViewBag.Title = "GeReXiangXi";
+    Layout = "~/Views/Shared/_YongHu.cshtml";
+}
+<link href="~/CSS/GeRenZhongXin/GeRenXiangXi.css" rel="stylesheet" />
+
+<div id="ZhuT">
+    @using (Html.BeginForm("GeRenXiangXi", "YongGeRenZhongXin", FormMethod.Post, new { id = "saveForm", @ref = "saveForm" }))
+    {
+        <div id="GeRenXx">
+            <h1>@Model.YongHuMing</h1>
+            <p>@Model.YongHuID</p>
+            <p><a href="/YongGeRenZhongXin/GeRenXinXi">详细</a></p>
+        </div>
+    }
+    <div id="ZuoPing">
+        <div v-if="isLoading" class="loading-container">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">加载中，请稍候...</p>
+        </div>
+
+        <template v-else>
+            <div class="card-list" v-for="(item, index) in list" :key="item.t.TieZiID">
+                <a :href="'/YongHu/TieZiNeiRong?id=' + item.t.TieZiID">
+                    <div class="card-list-left">
+                        <img :src="'/Img/'+item.Lujing" />
+                    </div>
+                    <div class="card-list-right">
+                        <div class="list-Top">
+                            <p class="bt">{{item.t.TieZiMing}}</p>
+                            <p class="yh">{{item.t.YongHuMing}}</p>
+                        </div>
+                        <div class="list-Footer">
+                            <p class="time">{{item.t.FaBuShiJian}}</p>
+                        </div>
+                    </div>
+                </a>
+                <div class="card-list-right">
+                    <a :href="'/YongGeRenZhongXin/TieZiEdit?id=' + item.t.TieZiID">修改</a>
+                    <a href="javascript:void(0)" @@click.prevent="kaiQiDelModal(item)">删除</a>
+                </div>
+            </div>
+
+            <div id="FanYe" v-if="totalPages > 0">
+                <div class="pagination">
+                    <input type="button" value="首页" @@click="DiYiYe()" />
+                    <input type="button" :disabled="disabledPrev" value="上一页" @@click="ShangYiTie()" />
+                    <span style="line-height: 40px;">第 {{ currentPage }} / {{ totalPages }} 页</span>
+                    <input type="button" :disabled="disabledNext" value="下一页" @@click="XiaYiYie()" />
+                    <input type="button" value="尾页" @@click="MoWei()" />
+                </div>
+            </div>
+
+            <div v-if="list.length === 0" class="no-data">暂无帖子</div>
+        </template>
+    </div>
+</div>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.14/vue.min.js"></script>
+<script>
+    var app = new Vue({
+        el: "#ZuoPing",
+        data: {
+            list: [],
+            currentPage: 1,
+            pageSize: 10,
+            total: 0,
+            totalPages: 0,
+            disabledPrev: true,
+            disabledNext: false,
+            isLoading: true,
+            currentDelItem: null
+        },
+        created: function () {
+            this.loadPage(1);
+        },
+        methods: {
+            loadPage: function (page) {
+                var self = this;
+                fetch(`/Models/GeRenZhongXin/GeRenHandler.ashx?page=${page}&pageSize=${self.pageSize}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        self.list = data.list.map(item => {
+                            if (item.t && item.t.FaBuShiJian) {
+                                const timestamp = parseInt(item.t.FaBuShiJian.replace(/\D/g, ''));
+                                const date = new Date(timestamp);
+                                const year = date.getFullYear();
+                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                const day = String(date.getDate()).padStart(2, '0');
+                                item.t.FaBuShiJian = `${year}-${month}-${day}`;
+                            }
+                            return item;
+                        });
+                        self.currentPage = data.page;
+                        self.total = data.total;
+                        self.totalPages = data.total === 0 ? 0 : Math.ceil(data.total / data.pageSize);
+
+                        if (self.total === 0) {
+                            self.disabledPrev = true;
+                            self.disabledNext = true;
+                        } else {
+                            self.disabledPrev = (self.currentPage === 1);
+                            self.disabledNext = (self.currentPage === self.totalPages);
+                        }
+                    }).catch(err => {
+                        console.error("数据加载失败", err);
+                        self.total = 0;
+                        self.totalPages = 0;
+                        self.disabledPrev = true;
+                        self.disabledNext = true;
+                    })
+                    .finally(() => {
+                        self.isLoading = false;
+                    });
+            },
+            ShangYiTie: function () {
+                if (this.currentPage > 1) this.loadPage(this.currentPage - 1);
+            },
+            XiaYiYie: function () {
+                if (this.currentPage < this.totalPages) this.loadPage(this.currentPage + 1);
+            },
+            DiYiYe: function () {
+                if (this.totalPages > 0) this.loadPage(1);
+            },
+            MoWei: function () {
+                if (this.totalPages > 0) this.loadPage(this.totalPages);
+            },
+
+            // ========== 删除模态窗（原生 JS 实现，挂载到 body，彻底解决包含块问题） ==========
+            kaiQiDelModal: function (item) {
+                this.currentDelItem = item;
+                this.createModal();
+                document.body.classList.add('no-scroll');
+            },
+            guanBiDelModal: function () {
+                this.removeModal();
+                document.body.classList.remove('no-scroll');
+            },
+            zhiXingDel: function () {
+                if (this.currentDelItem) {
+                    window.location.href = '/YongGeRenZhongXin/TieZiDel?id=' + this.currentDelItem.t.TieZiID;
+                }
+            },
+
+            // 创建模态窗并添加到 body（不再显示帖子ID）
+            createModal: function () {
+                var self = this;
+
+                // 防止重复创建
+                if (document.getElementById('customDelModal')) return;
+
+                var overlay = document.createElement('div');
+                overlay.className = 'mo-tai-zhe-zhao';
+                overlay.id = 'customDelModal';
+
+                var card = document.createElement('div');
+                card.className = 'mo-tai-ka-pian';
+
+                var title = document.createElement('h3');
+                title.textContent = '确认删除';
+
+                // 只显示帖子标题，不显示帖子ID
+                var titleP = document.createElement('p');
+                titleP.textContent = '帖子标题：' + this.currentDelItem.t.TieZiMing;
+
+                var warnP = document.createElement('p');
+                warnP.style.color = '#e05a5a';
+                warnP.textContent = '删除后无法恢复，确定要继续吗？';
+
+                var btnContainer = document.createElement('div');
+                btnContainer.className = 'mo-tai-an-niu';
+
+                var cancelBtn = document.createElement('button');
+                cancelBtn.className = 'pagination-input';
+                cancelBtn.textContent = '取消';
+                cancelBtn.addEventListener('click', function () {
+                    self.guanBiDelModal();
+                });
+
+                var confirmBtn = document.createElement('button');
+                confirmBtn.className = 'pagination-input';
+                confirmBtn.textContent = '确认删除';
+                confirmBtn.addEventListener('click', function () {
+                    self.zhiXingDel();
+                });
+
+                btnContainer.appendChild(cancelBtn);
+                btnContainer.appendChild(confirmBtn);
+
+                card.appendChild(title);
+                // 不再添加 idP（帖子ID段落）
+                card.appendChild(titleP);
+                card.appendChild(warnP);
+                card.appendChild(btnContainer);
+
+                overlay.appendChild(card);
+
+                // 点击遮罩空白处关闭
+                overlay.addEventListener('click', function (e) {
+                    if (e.target === overlay) {
+                        self.guanBiDelModal();
+                    }
+                });
+
+                document.body.appendChild(overlay);
+            },
+
+            // 移除模态窗
+            removeModal: function () {
+                var modal = document.getElementById('customDelModal');
+                if (modal) {
+                    modal.remove();
+                }
+            }
+        }
+    });
+</script>

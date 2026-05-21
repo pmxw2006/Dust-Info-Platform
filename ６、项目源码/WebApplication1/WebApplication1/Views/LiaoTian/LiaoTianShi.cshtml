@@ -1,0 +1,278 @@
+﻿@{
+    ViewBag.Title = "聊天室";
+    Layout = "~/Views/Shared/_YongHu.cshtml";
+    int currentUserId = Convert.ToInt32(Session["ID"] ?? 0);
+}
+@section styles {
+    <link href="~/CSS/LiaoTian/LiaoTianShi.css" rel="stylesheet" />
+}
+
+<div id="liaotian-app" class="liaotian-zhengti" v-cloak>
+    <div class="ce-bian-lan">
+        <div class="qun-liao-biao-ti">功能</div>
+        <div v-for="room in rooms" :key="room.id"
+             class="qun-liao-xiang" :class="{ huoyue: room.id === activeRoom }"
+             @@click="qiehuanFangjian(room.id)">
+            <div class="touxiang">{{ room.name.charAt(0) }}</div>
+            <span>{{ room.name }}</span>
+        </div>
+    </div>
+
+    <div class="liaotian-qu">
+        <!-- 标题，反馈表单，消息列表，输入区等，此处省略，保持原样 -->
+        <div class="liaotian-dingbu">{{ activeRoom == 0 ? 'AI 助手' : (activeRoom == -1 ? '意见反馈' : activeRoomName) }}</div>
+
+        <div v-if="activeRoom == -1" class="fankui-form">
+            <textarea class="fankui-textarea" v-model="fanKuiNeiRong" placeholder="请输入您的反馈意见..."></textarea>
+            <button class="fankui-tijiao" @@click="tiJiaoFanKui">提交反馈</button>
+            <div v-if="fanKuiSuccess" class="fankui-chenggong">{{ fanKuiSuccess }}</div>
+        </div>
+
+        <div v-else class="xiaoxi-lie" ref="messageBox">
+            <div v-for="msg in messages" :key="msg.id || msg.XiaoXiID"
+                 class="xiaoxi-tiao" :class="msg.self ? 'zijid' : (msg.ai ? 'ai' : 'duifang')">
+                <div class="xiaoxi-yonghu" v-if="!msg.self">
+                    {{ msg.ai ? 'AI 助手' : (msg.YongHuMing || ('用户'+msg.YongHuID)) }}
+                </div>
+                <div class="xiaoxi-neirong">{{ msg.NeiRong || msg.content }}</div>
+                <div class="xiaoxi-shijian">{{ weixinTime(msg.FaSongShiJian || msg.time) }}</div>
+            </div>
+            <div v-if="messages.length === 0" style="text-align:center; color:#8fbedc; padding:40px;">
+                {{ activeRoom == 0 ? '向我提问吧～' : '暂无消息' }}
+            </div>
+            <div v-if="aiLoading" class="xiaoxi-tiao ai" style="align-self:flex-start;">
+                <div class="ai-loading-box">正在输入...</div>
+            </div>
+        </div>
+
+        <div v-if="activeRoom != -1" class="shuru-qu">
+            <input type="text" class="shuru-kuang" v-model="newMessage"
+                   @@keyup.enter="fasongXiaoXi" placeholder="输入消息..." maxlength="500"
+                   :disabled="aiLoading" />
+            <button class="fasong-an" @@click="fasongXiaoXi" :disabled="aiLoading">发送</button>
+        </div>
+    </div>
+
+    <!-- 消息提示模态框（替换 alert） -->
+    <div class="mo-tai-zhe-zhao" v-if="showMessageModal" @@click.self="guanBiXiaoXiMoTai">
+        <div class="mo-tai-ka-pian">
+            <h3>提示</h3>
+            <p>{{ messageText }}</p>
+            <div class="mo-tai-an-niu">
+                <button @@click="guanBiXiaoXiMoTai">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.14/vue.min.js"></script>
+<script>
+    new Vue({
+        el: '#liaotian-app',
+        data: {
+            currentUserId: @currentUserId,
+            activeRoom: @ViewBag.RoomId ?? 1,
+            rooms: [
+                { id: 1, name: '聊天室 1' },
+                { id: 2, name: '聊天室 2' },
+                { id: 3, name: '聊天室 3' },
+                { id: 0, name: 'AI 助手' },
+                { id: -1, name: '意见反馈' }
+            ],
+            messages: [],
+            newMessage: '',
+            timer: null,
+            firstLoad: true,
+            aiLoading: false,
+            fanKuiNeiRong: '',
+            fanKuiSuccess: '',
+            // 模态框相关
+            showMessageModal: false,
+            messageText: ''
+        },
+        computed: {
+            activeRoomName: function() {
+                var room = this.rooms.find(r => r.id === this.activeRoom);
+                return room ? room.name : '';
+            }
+        },
+        created() {
+            this.jinzhanJiaZai();
+            if (this.activeRoom !== 0 && this.activeRoom !== -1) {
+                this.timer = setInterval(() => { this.jiazaiXiaoxi(false); }, 2000);
+            }
+        },
+        beforeDestroy() {
+            clearInterval(this.timer);
+        },
+        methods: {
+            qiehuanFangjian(roomId) {
+                this.activeRoom = roomId;
+                this.messages = [];
+                this.firstLoad = true;
+                this.fanKuiNeiRong = '';
+                this.fanKuiSuccess = '';
+                clearInterval(this.timer);
+                if (roomId > 0) {
+                    this.timer = setInterval(() => { this.jiazaiXiaoxi(false); }, 2000);
+                    this.jiazaiXiaoxi(true);
+                } else {
+                    this.timer = null;
+                }
+            },
+            jinzhanJiaZai() {
+                if (this.activeRoom > 0) this.jiazaiXiaoxi(true);
+            },
+            jiazaiXiaoxi(forceScroll) {
+                if (this.activeRoom <= 0) return;
+                var self = this;
+                var take = forceScroll ? 10 : 50;
+                fetch('/LiaoTian/HuoQuXiaoXi?roomId=' + self.activeRoom + '&take=' + take)
+                    .then(res => res.json())
+                    .then(data => {
+                        const messagesWithSelf = data.map(msg => ({
+                            ...msg,
+                            self: msg.YongHuID == self.currentUserId
+                        }));
+                        self.messages = messagesWithSelf;
+                        self.$nextTick(() => {
+                            var box = self.$refs.messageBox;
+                            if (!box) return;
+                            if (forceScroll) {
+                                box.scrollTop = box.scrollHeight;
+                                self.firstLoad = false;
+                            } else {
+                                var isNearBottom = box.scrollTop + box.clientHeight >= box.scrollHeight - 50;
+                                if (isNearBottom) box.scrollTop = box.scrollHeight;
+                            }
+                        });
+                    });
+            },
+            fasongXiaoXi() {
+                var msg = this.newMessage.trim();
+                if (!msg) return;
+                if (this.activeRoom === 0) {
+                    this.fasongAiXiaoXi(msg);
+                    return;
+                }
+                var self = this;
+                fetch('/LiaoTian/FaSongXiaoXi', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'roomId=' + self.activeRoom + '&neiRong=' + encodeURIComponent(msg)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        self.newMessage = '';
+                        self.jiazaiXiaoxi(true);
+                    } else {
+                        self.xianShiXiaoXi(data.message || '发送失败');
+                    }
+                });
+            },
+            fasongAiXiaoXi(msg) {
+                var self = this;
+                self.messages.push({
+                    id: Date.now(),
+                    self: true,
+                    content: msg,
+                    time: new Date().toISOString()
+                });
+                self.newMessage = '';
+                self.$nextTick(() => {
+                    var box = self.$refs.messageBox;
+                    if (box) box.scrollTop = box.scrollHeight;
+                });
+                self.aiLoading = true;
+                fetch('/LiaoTian/AiChat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'message=' + encodeURIComponent(msg)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    self.aiLoading = false;
+                    self.messages.push({
+                        id: Date.now() + 1,
+                        self: false,
+                        ai: true,
+                        content: data.success ? data.reply : ('出错了：' + data.reply),
+                        time: new Date().toISOString()
+                    });
+                    self.$nextTick(() => {
+                        var box = self.$refs.messageBox;
+                        if (box) box.scrollTop = box.scrollHeight;
+                    });
+                })
+                .catch(err => {
+                    self.aiLoading = false;
+                    self.messages.push({
+                        id: Date.now() + 2,
+                        self: false,
+                        ai: true,
+                        content: '网络错误：' + err.message,
+                        time: new Date().toISOString()
+                    });
+                    self.$nextTick(() => {
+                        var box = self.$refs.messageBox;
+                        if (box) box.scrollTop = box.scrollHeight;
+                    });
+                });
+            },
+            tiJiaoFanKui() {
+                var neiRong = this.fanKuiNeiRong.trim();
+                if (!neiRong) {
+                    this.xianShiXiaoXi('请输入反馈内容');
+                    return;
+                }
+                var self = this;
+                fetch('/LiaoTian/TiJiaoFanKui', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'neiRong=' + encodeURIComponent(neiRong)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        self.fanKuiNeiRong = '';
+                        self.fanKuiSuccess = data.message;
+                        setTimeout(() => { self.fanKuiSuccess = ''; }, 3000);
+                    } else {
+                        self.xianShiXiaoXi(data.message || '提交失败');
+                    }
+                });
+            },
+            weixinTime(str) {
+                if (!str) return '';
+                var d = new Date(str);
+                if (isNaN(d.getTime())) return str;
+                var now = new Date();
+                var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                var yesterday = new Date(today.getTime() - 86400000);
+                var msgDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+                var time = d.getHours().toString().padStart(2,'0') + ':' +
+                           d.getMinutes().toString().padStart(2,'0');
+                if (msgDate.getTime() === today.getTime()) {
+                    return time;
+                } else if (msgDate.getTime() === yesterday.getTime()) {
+                    return '昨天 ' + time;
+                } else {
+                    var month = (d.getMonth()+1).toString().padStart(2,'0');
+                    var day = d.getDate().toString().padStart(2,'0');
+                    return month + '/' + day + ' ' + time;
+                }
+            },
+            // 模态框控制方法
+            xianShiXiaoXi(text) {
+                this.messageText = text;
+                this.showMessageModal = true;
+            },
+            guanBiXiaoXiMoTai() {
+                this.showMessageModal = false;
+                this.messageText = '';
+            }
+        }
+    });
+</script>
