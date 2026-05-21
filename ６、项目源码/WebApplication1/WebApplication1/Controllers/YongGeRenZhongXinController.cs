@@ -139,12 +139,15 @@ namespace WebApplication1.Controllers
             if (Session["ID"] == null)
                 return RedirectToAction("DengLuYe", "DengLu");
 
-            if (Request["id"] == null)
+            var ii = Request["id"];
+            if (ii == null)
             {
-                Response.Redirect("/YongHu/Index");
+                ii = YID.ToString();
             }
-           var danqianID = MiMaFuWu .JieMi(Request["id"].ToString());
-            if (YID == danqianID)
+
+
+            var danqianID = MiMaFuWu.JieMi(ii.ToString());
+            if (YID == danqianID || danqianID == 0)
             {
                 aa = true;
             }
@@ -156,7 +159,7 @@ namespace WebApplication1.Controllers
             {
                 YID = danqianID;
                 aa = true;
-            } 
+            }
 
             YongHu yh = YongHuXinXi.YongHuXinxi(YID);
             ViewBag.Yid = int.Parse(Session["ID"].ToString());
@@ -181,10 +184,16 @@ namespace WebApplication1.Controllers
                     yhjbxx.TieZiID = i.TieZiID;
                     yhjbxx.TieZiMing = i.TieZiMing;
                     yhjbxx.FaBuShiJian = i.FaBuShiJian;
-                    // 建议保留判空，避免无图时崩溃
                     var photo = HuoQuTieZi.ZhaoPianXinxiONE(i.TieZiID);
                     yhjbxx.Lujing = photo?.Lujing ?? "YongHu.jpeg";
-                    tz.Add(yhjbxx);
+                    if (i.ZhuangTai == 1)
+                    {
+                        tz.Add(yhjbxx);
+                    }
+                    else
+                    {
+                        continue;
+                    }
                 }
 
                 // ===== 新增分页处理（不破坏原有逻辑） =====

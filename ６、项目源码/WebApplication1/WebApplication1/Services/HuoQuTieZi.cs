@@ -17,7 +17,7 @@ namespace WebApplication1.Services
         {
             using (YouXiEntities YouXi=new YouXiEntities())
             {
-                var list = YouXi.TieZi.Where(p => p.YongHuID == YongHuID).ToList();
+                var list = YouXi.TieZi.Where(p => p.YongHuID == YongHuID).OrderByDescending(p=>p.FaBuShiJian).ToList();
                 return list;
             }
         }
