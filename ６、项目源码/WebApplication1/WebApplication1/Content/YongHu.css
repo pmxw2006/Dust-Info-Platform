@@ -227,36 +227,39 @@ div[id^="a5955434-37d2-4997-9bae-6eee0f3f8a06"] {
             outline: none;
         }
 
-/* ================= 页脚区域 ================= */
+/* 页脚样式 - 与现有暗色科技风格一致 */
 .footer {
-    background: rgba(17, 27, 38, 0.85);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: linear-gradient(135deg, #1a2a3a 0%, #0f1a24 100%);
     border-top: 1px solid rgba(102, 192, 244, 0.3);
-    padding: 20px 0;
-    text-align: center;
-    color: #8fbedc;
-    font-size: 0.9rem;
-    letter-spacing: 1px;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+    padding: 5px 20px;
+    color: #8aaec0;
+    font-size: 13px;
+    backdrop-filter: blur(4px);
 }
 
-    .footer p {
-        margin: 0;
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-info p {
+    margin: 5px 0;
+    letter-spacing: 0.3px;
+    text-align: center;
+}
+
+/* 响应式 */
+@media (max-width: 600px) {
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
     }
-
-    .footer a {
-        color: #66c0f4;
-        text-decoration: none;
-        transition: color 0.2s;
-    }
-
-        .footer a:hover {
-            color: #a4d7f8;
-            text-shadow: 0 0 6px rgba(102, 192, 244, 0.5);
-        }
-
+}
 /* ================= 响应式 ================= */
 @media (max-width: 768px) {
     .header {
