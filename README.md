@@ -1,6 +1,6 @@
 # 微尘咨询平台 (Dust Info Platform)
 
-> 一个基于 ASP.NET MVC + Entity Framework + SQL Server 的在线咨询与社区平台，支持用户注册登录、帖子发布与评论、实时聊天室、AI 助手、管理后台等功能。本项目为大二下学期软件工程课程小组作业，由四位成员分工协作完成。
+> 一个基于 ASP.NET MVC + Entity Framework + SQL Server 的在线咨询与社区平台，支持用户注册登录、帖子发布与评论、实时聊天室、AI 助手、管理后台等功能。本项目为大二下学期卓越项目课程小组作业，由四位成员分工协作完成。
 
 ---
 
